@@ -1,5 +1,6 @@
 package com.mincor.kviper.viper.core.iteractor
 
 interface IInteractor {
-    fun unregister()
+    fun bind()
+    fun unbind()
 }

@@ -1,5 +1,6 @@
 package com.mincor.kviper.viper.core.router
 
 interface IRouter {
-    fun unregister()
+    fun bind()
+    fun unbind()
 }

@@ -1,4 +1,4 @@
-package com.mincor.kviper.viper.core.viewmodel
+package com.mincor.kviper.viper.core.view
 
 import com.mincor.kviper.viper.core.presenter.IBasePresenter
 

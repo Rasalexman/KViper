@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.2.31'
+    ext.kotlin_version = '1.2.40'
     repositories {
         google()
         jcenter()
@@ -13,12 +13,29 @@ buildscript {
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
+
+    ext {
+        supportLib = '27.1.1'
+        conductorVersion = '2.1.4'
+        kodeinVersion5 = "5.0.0"
+        retrofitVersion = "2.3.0"
+        retrofitCoroutinesVersion = "0.9.0"
+        dbflowVersion = "4.2.4"
+        leakCanaryVersion = "1.5.4"
+        fastAdapterLib = '3.2.5'
+        fastAdapterCommon = '3.2.5'
+        fastAdapterExtension = '3.2.5'
+        glideVersion = '4.7.1'
+        firebaseVersion = '12.0.1'
+        ankoVersion='0.10.4'
+    }
 }
 
 allprojects {
     repositories {
         google()
         jcenter()
+        maven { url "https://www.jitpack.io" }
     }
 }
 
