@@ -30,7 +30,6 @@ interface ISearchWeatherContract {
 
     interface ISearchInteractorHandler : IInteractorHandler {
         fun onSearchedWeatherHandler(weatherData:WeatherDataResponce)
-        fun onErrorHandler()
     }
 
 }

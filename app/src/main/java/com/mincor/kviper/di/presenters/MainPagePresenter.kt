@@ -1,8 +1,11 @@
 package com.mincor.kviper.di.presenters
 
+import com.mincor.kviper.adapters.MainItem
 import com.mincor.kviper.common.tracker.GPSTracker
 import com.mincor.kviper.di.contracts.IMainPageContract
 import com.mincor.kviper.di.interfaces.IWeatherApi
+import com.mincor.kviper.models.WeatherDataResponce
+import com.mincor.kviper.models.network.ForecastDataResponce
 import com.mincor.kviper.models.network.ListFindDataResponce
 import com.mincor.kviper.utils.log
 import kotlinx.coroutines.experimental.CommonPool
@@ -14,15 +17,15 @@ import org.kodein.di.generic.singleton
 import ru.gildor.coroutines.retrofit.await
 
 
-class MainPagePresenter(private val gpsTracker: GPSTracker, weatherApi:IWeatherApi) : IMainPageContract.IPresenter, IMainPageContract.IMainInteractorHandler {
+class MainPagePresenter(private val gpsTracker: GPSTracker, weatherApi: IWeatherApi) : IMainPageContract.IPresenter, IMainPageContract.IMainInteractorHandler {
 
     private var router: IMainPageContract.IMainRouter? = null
     private val interactor: IMainPageContract.IMainInteractor = MainInteractor(this, weatherApi)
 
     override fun bind(v: IMainPageContract.IView) {
-        if(gpsTracker.canGetLocation()){
+        if (gpsTracker.canGetLocation()) {
             router = MainRouter(v)
-            interactor.getLocationWeatherDataList(gpsTracker.longitude, gpsTracker.latitude)
+            interactor.getCurrentLocationWeather(gpsTracker.longitude, gpsTracker.latitude)
         } else {
             gpsTracker.showSettingsAlert()
         }
@@ -41,8 +44,32 @@ class MainPagePresenter(private val gpsTracker: GPSTracker, weatherApi:IWeatherA
 
     }
 
+    override fun onAllMainDataHandler(weather: WeatherDataResponce, forecast: ForecastDataResponce) {
+        //val dataList = mutableListOf(MainItem(weather.))
+    }
+
+    override fun onResultHandler(result: Any?) {
+
+    }
+
     inner class MainInteractor(override var output: IMainPageContract.IMainInteractorHandler? = null,
                                private val weatherApi: IWeatherApi) : IMainPageContract.IMainInteractor {
+
+        override fun getCurrentLocationWeather(lon: Double, lat: Double) {
+            launch(CommonPool) {
+                try {
+                    val weatherData = weatherApi.getWeatherByCoords(lat, lon).await()
+                    val weatherForecast = weatherApi.getWeatherForecastById(weatherData.id!!).await()
+                    output?.onAllMainDataHandler(weatherData, weatherForecast)
+                } catch (e: Throwable) {
+                    log { e.message }
+                    output?.onErrorHandler()
+                } catch (e: Exception) {
+                    log { e.message }
+                    output?.onErrorHandler()
+                }
+            }
+        }
 
         override fun getLocationWeatherDataList(lon: Double, lat: Double) {
             launch(CommonPool) {
@@ -80,6 +107,6 @@ class MainPagePresenter(private val gpsTracker: GPSTracker, weatherApi:IWeatherA
     }
 }
 
-val mainModule = Kodein.Module{
+val mainModule = Kodein.Module {
     bind<IMainPageContract.IPresenter>() with singleton { MainPagePresenter(instance(), instance()) }
 }

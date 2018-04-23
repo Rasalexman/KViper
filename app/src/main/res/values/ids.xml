@@ -7,4 +7,9 @@
     <item name="rounded_bg" type="id" />
     <item name="next_item_id" type="id" />
     <item name="double_c_item_id" type="id" />
+    <item name="main_image_id" type="id" />
+    <item name="location_name_id" type="id" />
+    <item name="weather_desc_id" type="id" />
+    <item name="temperature_id" type="id" />
+    <item name="linear_icons_one_id" type="id" />
 </resources>

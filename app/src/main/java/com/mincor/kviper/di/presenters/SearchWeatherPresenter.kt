@@ -34,6 +34,14 @@ class SearchWeatherPresenter(weatherApi: IWeatherApi) : ISearchWeatherContract.I
         router?.onSearchResult(weatherData)
     }
 
+    override fun onResultHandler(result: Any?) {
+        val weatherData = result as? WeatherDataResponce
+        weatherData?.let {
+            weatherDataResponce = result
+            router?.onSearchResult(result)
+        }
+    }
+
     override fun onErrorHandler() {
         router?.showSubmitError()
     }
@@ -48,7 +56,7 @@ class SearchWeatherPresenter(weatherApi: IWeatherApi) : ISearchWeatherContract.I
     }
 
     inner class SearchWeatherInteractor(
-            override var output: ISearchWeatherContract.ISearchInteractorHandler? = null,
+            override val output: ISearchWeatherContract.ISearchInteractorHandler? = null,
             private val weatherApi: IWeatherApi
     ) : ISearchWeatherContract.ISearchInteractor {
 
