@@ -2,4 +2,9 @@
 <resources>
     <item name="main_toolbar" type="id" />
     <item name="rv_controller" type="id" />
+    <item name="main_item_id" type="id" />
+    <item name="main_item_lay" type="id" />
+    <item name="rounded_bg" type="id" />
+    <item name="next_item_id" type="id" />
+    <item name="double_c_item_id" type="id" />
 </resources>

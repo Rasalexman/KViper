@@ -20,8 +20,7 @@ import android.widget.TextView
 import com.mincor.kviper.BuildConfig
 import com.raizlabs.android.dbflow.kotlinextensions.database
 import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.withTimeoutOrNull
+import kotlinx.coroutines.experimental.*
 import org.jetbrains.anko.custom.ankoView
 import org.jetbrains.anko.displayMetrics
 
@@ -44,6 +43,12 @@ inline fun ViewManager.styledButton(textres: Int, styleRes: Int = 0, init: Butto
     return ankoView({ if (styleRes == 0) Button(it) else Button(ContextThemeWrapper(it, styleRes), null, 0) }, 0) {
         init()
         setText(textres)
+    }
+}
+
+inline fun schedule(crossinline runner: suspend () -> Unit)  {
+    launch(CommonPool) {
+        runner()
     }
 }
 
@@ -123,6 +128,10 @@ fun roundedBg(col:Int, corners:Float = 100f, withStroke:Boolean = false, strokeC
     cornerRadius = corners
     setColor(col)
     if(withStroke) setStroke(strokeWeight, strokeColor)
+}
+
+fun pxToDp(px: Int): Int {
+    return (px / Resources.getSystem().displayMetrics.density).toInt()
 }
 
 /**

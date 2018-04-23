@@ -2,7 +2,7 @@ package com.mincor.kviper.application
 
 import android.app.Application
 import com.mincor.kviper.di.modules.netModule
-import com.raizlabs.android.dbflow.config.FlowManager
+import com.mincor.kviper.di.presenters.searchModule
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.androidModule
@@ -17,15 +17,7 @@ class MainApplication : Application(), KodeinAware {
     override val kodein = Kodein.lazy {
         import(androidModule(this@MainApplication))
         import(netModule)
-        /*import(billingModule)
-        import(mainPresenterModule)
-        import(articlePresenterModule)
-        import(searchPresenterModule)
-        import(newsPresenterModule)
-        import(bookmarkPresenterModule)
-        import(settingPresenterModule)
-        import(preloaderPresenterModule)
-        import(redactionPresenterModule)*/
+        import(searchModule)
     }
 
     /*companion object {
@@ -49,7 +41,7 @@ class MainApplication : Application(), KodeinAware {
 
     override fun onTerminate() {
         super.onTerminate()
-        FlowManager.destroy()
+        //FlowManager.destroy()
         //Analytics.clearAnalytics()
     }
 }

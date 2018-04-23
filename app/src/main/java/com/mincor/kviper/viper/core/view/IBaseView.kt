@@ -1,5 +1,6 @@
 package com.mincor.kviper.viper.core.view
 
+import android.content.res.Resources
 import com.mincor.kviper.viper.core.presenter.IBasePresenter
 
 /**
@@ -7,4 +8,5 @@ import com.mincor.kviper.viper.core.presenter.IBasePresenter
  */
 interface IBaseView<out T : IBasePresenter<*>> {
     val presenter: T
+    fun getResources(): Resources?
 }

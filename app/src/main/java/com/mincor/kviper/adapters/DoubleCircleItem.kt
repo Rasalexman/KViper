@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
 import com.mincor.kviper.R
-import com.mincor.kviper.utils.color
 import com.mincor.kviper.utils.roundedBg
 import org.jetbrains.anko.*
 import ru.fortgroup.dpru.adapters.IDataHolder
@@ -17,11 +16,11 @@ import ru.fortgroup.dpru.adapters.IDataHolder
  * Created by Alex on 07.01.2017.
  */
 
-class MainItem() : AbstractItem<MainItem, MainItem.ViewHolder>(), IDataHolder {
+class DoubleCircleItem() : AbstractItem<DoubleCircleItem, DoubleCircleItem.ViewHolder>(), IDataHolder {
 
-    override fun createView(ctx: Context, parent: ViewGroup?): View = MainItemUI().createView(AnkoContext.create(ctx, this))
+    override fun createView(ctx: Context, parent: ViewGroup?): View = NextItemUI().createView(AnkoContext.create(ctx, this))
     override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
-    override fun getType(): Int = R.id.main_item_id
+    override fun getType(): Int = R.id.double_c_item_id
     override fun getLayoutRes(): Int = -1
 
     /**
@@ -50,7 +49,7 @@ class MainItem() : AbstractItem<MainItem, MainItem.ViewHolder>(), IDataHolder {
     /**
      * our ViewHolder
      */
-    class ViewHolder(view: View) : FastAdapter.ViewHolder<MainItem>(view) {
+    class ViewHolder(view: View) : FastAdapter.ViewHolder<DoubleCircleItem>(view) {
         /*val mainAuthor: TextView = view.find(R.id.text_main_author)
         val mainTag: TextView = view.find(R.id.text_main_rubric)
 
@@ -58,7 +57,7 @@ class MainItem() : AbstractItem<MainItem, MainItem.ViewHolder>(), IDataHolder {
         private val imageProgress: ProgressBar = view.find(R.id.image_loader)
         private val mainTitle: TextView = view.find(R.id.text_main_title)*/
 
-        override fun bindView(item: MainItem, payloads: MutableList<Any>?) {
+        override fun bindView(item: DoubleCircleItem, payloads: MutableList<Any>?) {
             /*mainAuthor.text = item.author
             mainTitle.text = item.title.fromHTML(mainTitle.context)
 
@@ -74,7 +73,7 @@ class MainItem() : AbstractItem<MainItem, MainItem.ViewHolder>(), IDataHolder {
             }*/
         }
 
-        override fun unbindView(item: MainItem?) {
+        override fun unbindView(item: DoubleCircleItem?) {
            /* mainImage.clear()
             mainAuthor.text = null
             mainTitle.text = null
@@ -82,20 +81,44 @@ class MainItem() : AbstractItem<MainItem, MainItem.ViewHolder>(), IDataHolder {
         }
     }
 
-    inner class MainItemUI : AnkoComponent<MainItem> {
-        override fun createView(ui: AnkoContext<MainItem>): View = with(ui) {
+    inner class NextItemUI : AnkoComponent<DoubleCircleItem> {
+        override fun createView(ui: AnkoContext<DoubleCircleItem>): View = with(ui) {
             frameLayout {
                 //backgroundColor = Color.parseColor("#7987C8")//color(R.color.colorRed)
                 id = R.id.main_item_lay
                 lparams(matchParent)
 
                 relativeLayout {
-                    background = roundedBg(Color.parseColor("#7987C8"), 16f)
+                    background = roundedBg(Color.parseColor("#7582C1"), 16f)
                     id = R.id.rounded_bg
                 }.lparams(matchParent, (context.displayMetrics.widthPixels / 16) * 9) {
                     setMargins(dip(16),dip(16), dip(16), dip(16))
                 }
 
+                ////----- TOP
+                view {
+                    background = roundedBg(Color.parseColor("#1B1B1B")) //
+                }.lparams(dip(24), dip(24)) {
+                    gravity = Gravity.TOP
+                    setMargins(dip(36),  dip(8),0, 0)
+                }
+
+                view {
+                    background = roundedBg(Color.WHITE) //
+                }.lparams(dip(16),dip(16)) {
+                    gravity = Gravity.TOP
+                    setMargins(dip(40),  dip(12),0, 0)
+                }
+
+                view {
+                    backgroundColor = Color.WHITE
+                }.lparams(dip(2), dip(16)) {
+                    gravity = Gravity.TOP
+                    setMargins(dip(47),  0,0, 0)
+                }
+
+
+                /// BOTTOM
                 view {
                     background = roundedBg(Color.parseColor("#1B1B1B")) //
                 }.lparams(dip(24), dip(24)) {

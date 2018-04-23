@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">KViper</string>
+    <string name="menu_search">Поиск</string>
+    <string name="weather_search_title">Поиск погоды</string>
+    <string name="search_weather_hint">Введите город</string>
 </resources>
