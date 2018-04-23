@@ -2,6 +2,7 @@ package com.mincor.kviper.application
 
 import android.app.Application
 import com.mincor.kviper.di.modules.netModule
+import com.mincor.kviper.di.presenters.mainModule
 import com.mincor.kviper.di.presenters.searchModule
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -17,6 +18,7 @@ class MainApplication : Application(), KodeinAware {
     override val kodein = Kodein.lazy {
         import(androidModule(this@MainApplication))
         import(netModule)
+        import(mainModule)
         import(searchModule)
     }
 

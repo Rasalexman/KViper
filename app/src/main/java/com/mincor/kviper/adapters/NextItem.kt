@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
 import com.mincor.kviper.R
-import com.mincor.kviper.utils.roundedBg
 import org.jetbrains.anko.*
 import ru.fortgroup.dpru.adapters.IDataHolder
 
@@ -16,7 +15,7 @@ import ru.fortgroup.dpru.adapters.IDataHolder
  * Created by Alex on 07.01.2017.
  */
 
-class NextItem() : AbstractItem<NextItem, NextItem.ViewHolder>(), IDataHolder {
+class NextItem : AbstractItem<NextItem, NextItem.ViewHolder>(), IDataHolder {
 
     override fun createView(ctx: Context, parent: ViewGroup?): View = NextItemUI().createView(AnkoContext.create(ctx, this))
     override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)

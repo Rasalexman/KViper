@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import com.ihsanbal.logging.Level
 import com.ihsanbal.logging.LoggingInterceptor
 import com.mincor.kviper.BuildConfig
+import com.mincor.kviper.common.tracker.GPSTracker
 import com.mincor.kviper.consts.Consts
 import com.mincor.kviper.consts.Consts.API_KEY
 import com.mincor.kviper.di.interfaces.IWeatherApi
@@ -20,11 +21,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 
-
 val netModule = Kodein.Module {
     constant(Consts.SERVER_URL) with "http://api.openweathermap.org/data/2.5/"
     bind<OkHttpClient>() with singleton { createOkHttpClient(instance("cache")) }
     bind<IWeatherApi>() with singleton { createWebServiceApi<IWeatherApi>(instance(), instance(Consts.SERVER_URL)) }
+    bind<GPSTracker>() with singleton { GPSTracker(instance(), instance()) }
 }
 
 fun createOkHttpClient(cachedDir: File): OkHttpClient {
