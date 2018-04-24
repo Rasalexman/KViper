@@ -40,6 +40,7 @@ class SearchWeatherPresenter(weatherApi: IWeatherApi) : ISearchWeatherContract.I
             weatherDataResponce = result
             router?.onSearchResult(result)
         }
+
     }
 
     override fun onErrorHandler() {
@@ -100,9 +101,9 @@ class SearchWeatherPresenter(weatherApi: IWeatherApi) : ISearchWeatherContract.I
         }
 
         override fun onSearchResult(listDataResponce: WeatherDataResponce) {
-            launch(UI) {
+            /*launch(UI) {
                 view?.onSuccess(listOf(MainItem()))
-            }
+            }*/
 
         }
 

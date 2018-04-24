@@ -17,11 +17,11 @@ class MainPageController : BaseActionBarRecyclerController(), IMainPageContract.
     override fun onAttach(view: View) {
         super.onAttach(view)
         presenter.bind(this)
-
-        onSuccess(listOf(MainItem(), NextItem(), DoubleCircleItem(), NextItem(), DoubleCircleItem()))
+        //onSuccess(listOf(MainItem(), NextItem(), DoubleCircleItem(), NextItem(), DoubleCircleItem()))
     }
 
     override fun onSuccess(list: List<AbstractItem<*, *>>) {
+        hideLoadingFooter()
         mFastItemAdapter?.add(list)
     }
 

@@ -48,7 +48,7 @@ class SearchWeatherController : BaseActionBarRecyclerController(), SearchView.On
         super.onAttach(view)
         presenter.bind(this)
 
-        onSuccess(listOf(MainItem(), NextItem(), DoubleCircleItem(), NextItem(), DoubleCircleItem()))
+        //onSuccess(listOf(MainItem(), NextItem(), DoubleCircleItem(), NextItem(), DoubleCircleItem()))
 
     }
 

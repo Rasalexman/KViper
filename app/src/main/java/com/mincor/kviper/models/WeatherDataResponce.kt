@@ -1,16 +1,16 @@
 package com.mincor.kviper.models
 
 data class WeatherDataResponce (
-        var coord: Coord? = null,
-        var weather: List<Weather>? = null,
-        var base: String? = null,
-        var main: Main? = null,
-        var visibility: Int? = null,
-        var wind: Wind? = null,
-        var clouds: Clouds? = null,
-        var dt: Int? = null,
-        var sys: Sys? = null,
-        var id: Int? = null,
-        var name: String? = null,
-        var cod: Int? = null
+        val coord: Coord? = null,
+        val weather: List<Weather>? = null,
+        val base: String? = null,
+        val main: Main? = null,
+        val visibility: Int? = null,
+        val wind: Wind? = null,
+        val clouds: Clouds? = null,
+        val dt: Int? = null,
+        val sys: Sys? = null,
+        val id: Int? = null,
+        val name: String? = null,
+        val cod: Int? = null
         )

@@ -1,6 +1,5 @@
 package com.mincor.kviper.adapters.icons
 
-import android.graphics.drawable.Drawable
 import com.mincor.kviper.R
 
 object IconsCreator {
@@ -10,8 +9,8 @@ object IconsCreator {
             800 -> if(isDay) R.drawable.ic_icon_clear_day_64dp else R.drawable.ic_icon_clear_night_64dp // "clear sky"
             801 -> if(isDay) R.drawable.ic_icon_few_clouds_day_64dp else R.drawable.ic_icon_few_clouds_night_64dp //"few clouds"
             802 -> if(isDay) R.drawable.ic_icon_scattered_clouds_day_64dp else R.drawable.ic_icon_scattered_clouds_night_64dp //"scattered clouds"
-            803, //"broken clouds"
-            804, //"overcast clouds"
+            803 -> R.drawable.ic_icon_rain_clouds_64dp //"broken clouds"
+            804 -> R.drawable.ic_icon_broken_clouds_64dp //"overcast clouds"
             701, //"mist"
             711, //"smoke"
             721, //"haze"

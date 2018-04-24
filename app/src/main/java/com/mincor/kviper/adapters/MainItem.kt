@@ -12,6 +12,8 @@ import android.widget.TextView
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
 import com.mincor.kviper.R
+import com.mincor.kviper.adapters.icons.IconsCreator
+import com.mincor.kviper.models.items.MainItemModel
 import com.mincor.kviper.utils.color
 import com.mincor.kviper.utils.roundedBg
 import org.jetbrains.anko.*
@@ -21,7 +23,7 @@ import ru.fortgroup.dpru.adapters.IDataHolder
  * Created by Alex on 07.01.2017.
  */
 
-class MainItem(val imgCode:Int = 0, val locationName:String = "Location", val weatherDesc:String = "clear", val temperature:String= "1.0℃") : AbstractItem<MainItem, MainItem.ViewHolder>(), IDataHolder {
+class MainItem(val model:MainItemModel) : AbstractItem<MainItem, MainItem.ViewHolder>(), IDataHolder {
 
     override fun createView(ctx: Context, parent: ViewGroup?): View = MainItemUI().createView(AnkoContext.create(ctx, this))
     override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
@@ -36,12 +38,40 @@ class MainItem(val imgCode:Int = 0, val locationName:String = "Location", val we
         private val weatherDesc: TextView = view.find(R.id.weather_desc_id)
         private val temperatureCount: TextView = view.find(R.id.temperature_id)
 
+        private val windValue: TextView = view.find(R.id.wind_value_id)
+        private val windDesc: TextView = view.find(R.id.wind_desc_id)
+
+        private val humidityValue: TextView = view.find(R.id.humidity_value_id)
+
+        private val pressureValue: TextView = view.find(R.id.pressure_value_id)
+
+        private val daySunValue: TextView = view.find(R.id.sun_value_id)
+        private val daySunDesc: TextView = view.find(R.id.sun_desc_id)
+
+        private val tempMaxValue: TextView = view.find(R.id.temp_max_value_id)
+        private val tempMinValue: TextView = view.find(R.id.temp_min_value_id)
+
         private val mainImage: ImageView = view.find(R.id.main_image_id)
 
         override fun bindView(item: MainItem, payloads: MutableList<Any>?) {
-            locationName.text = item.locationName
-            weatherDesc.text = item.weatherDesc
-            temperatureCount.text = item.temperature
+            val model = item.model
+            locationName.text = model.locationName
+            weatherDesc.text = model.weatherDesc
+            temperatureCount.text = model.temperature
+            mainImage.setImageResource(IconsCreator.createIconByCode(model.imgCode))
+
+            windValue.text = model.windSpeed
+            windDesc.text = model.windDirection
+
+            humidityValue.text = model.humidity
+
+            pressureValue.text = model.pressure
+
+            daySunValue.text = model.daySun
+            daySunDesc.text = model.daySunDesc
+
+            tempMaxValue.text = model.maxTemp
+            tempMinValue.text = model.minTemp
         }
 
         override fun unbindView(item: MainItem?) {
@@ -57,7 +87,6 @@ class MainItem(val imgCode:Int = 0, val locationName:String = "Location", val we
 
         override fun createView(ui: AnkoContext<MainItem>): View = with(ui) {
             frameLayout {
-                //backgroundColor = Color.parseColor("#7987C8")//color(R.color.colorRed)
                 id = R.id.main_item_lay
                 lparams(matchParent)
 
@@ -65,40 +94,39 @@ class MainItem(val imgCode:Int = 0, val locationName:String = "Location", val we
                     background = roundedBg(Color.parseColor("#7987C8"), 16f)
                     id = R.id.rounded_bg
 
-                    imageView {
-                        backgroundColor = Color.BLACK
-                        id = R.id.main_image_id
-                    }.lparams(dip(64), dip(64)){
-                        alignParentLeft()
-                        setMargins(dip(16), dip(16), 0, 0)
-                    }
-
-                    verticalLayout {
-                        backgroundColor = Color.TRANSPARENT
-                        textView("YOUR CITY") {
-                            id = R.id.location_name_id
-                            backgroundColor = Color.TRANSPARENT
-                            textColor = Color.WHITE
-                            textSize = 24f
-                            typeface = Typeface.DEFAULT_BOLD
-                            maxHeight = dip(100)
+                    linearLayout {
+                        id = R.id.weather_block_id
+                        imageView {
+                            id = R.id.main_image_id
                         }
-                        textView("Clear sky") {
-                            id = R.id.weather_desc_id
-                            backgroundColor = Color.TRANSPARENT
-                            textColor = Color.LTGRAY
-                            textSize = 16f
+
+                        verticalLayout {
+                            textView("YOUR CITY") {
+                                id = R.id.location_name_id
+                                textColor = Color.WHITE
+                                textSize = 16f
+                                typeface = Typeface.DEFAULT_BOLD
+                                maxWidth = dip(150)
+                            }
+                            textView("Clear sky") {
+                                id = R.id.weather_desc_id
+                                textColor = Color.LTGRAY
+                                textSize = 16f
+                            }
+                        }.lparams {
+                            gravity = Gravity.CENTER_VERTICAL
+                            setMargins(dip(8), 0, 0, 0)
                         }
                     }.lparams {
-                        rightOf(R.id.main_image_id)
-                        setMargins(dip(8), dip(16), 0, 0)
+                        alignParentLeft()
+                        setMargins(dip(16), dip(16),0,0)
                     }
+
 
                     textView("1.0\u2103"){
                         id = R.id.temperature_id
-                        backgroundColor = Color.TRANSPARENT
                         textColor = Color.WHITE
-                        textSize = 24f
+                        textSize = 26f
                         typeface = Typeface.DEFAULT_BOLD
                     }.lparams {
                         alignParentRight()
@@ -106,6 +134,8 @@ class MainItem(val imgCode:Int = 0, val locationName:String = "Location", val we
                     }
 
                     val iconsSize = 36
+                    val rMargin = 4
+                    val sMargin = 4
 
                     ///--------- LINEAR 1
                     linearLayout {
@@ -115,7 +145,7 @@ class MainItem(val imgCode:Int = 0, val locationName:String = "Location", val we
                         linearLayout {
                             lparams(matchParent) {
                                 weight = 1f
-                                rightMargin = dip(8)
+                                rightMargin = dip(rMargin)
                             }
 
                             imageView(R.drawable.ic_icon_wind_64dp) {
@@ -124,7 +154,6 @@ class MainItem(val imgCode:Int = 0, val locationName:String = "Location", val we
                             verticalLayout {
                                 textView("4 mph") {
                                     id = R.id.wind_value_id
-                                    backgroundColor = Color.TRANSPARENT
                                     textSize = 14f
                                     textColor = Color.WHITE
                                 }.lparams(matchParent)
@@ -141,7 +170,7 @@ class MainItem(val imgCode:Int = 0, val locationName:String = "Location", val we
                         linearLayout {
                             lparams(matchParent) {
                                 weight = 1f
-                                rightMargin = dip(8)
+                                rightMargin = dip(rMargin)
                             }
 
                             imageView(R.drawable.ic_icon_humidity_64dp) {
@@ -150,49 +179,42 @@ class MainItem(val imgCode:Int = 0, val locationName:String = "Location", val we
                             verticalLayout {
                                 textView("4 mph") {
                                     id = R.id.humidity_value_id
-                                    backgroundColor = Color.TRANSPARENT
-                                    textSize = 14f
+                                    textSize = 16f
                                     textColor = Color.WHITE
                                 }.lparams(matchParent)
-                                textView("West") {
-                                    id = R.id.humidity_desc_id
-                                    textSize = 14f
-                                    textColor = Color.LTGRAY
-                                }
                             }.lparams {
                                 gravity = Gravity.CENTER_VERTICAL
-                                marginStart = dip(8)
+                                marginStart = dip(sMargin)
                             }
                         }
                         linearLayout {
                             lparams(matchParent) {
                                 weight = 1f
-                                rightMargin = dip(8)
                             }
 
                             imageView(R.drawable.ic_icon_pressure_64dp) {
                             }.lparams(dip(iconsSize), dip(iconsSize))
 
                             verticalLayout {
-                                textView("4 mph") {
+                                textView("762") {
                                     id = R.id.pressure_value_id
                                     textSize = 14f
                                     textColor = Color.WHITE
                                 }.lparams(matchParent)
-                                textView("West") {
+                                textView(R.string.pressure_txt) {
                                     id = R.id.pressure_desc_id
                                     textSize = 14f
                                     textColor = Color.LTGRAY
                                 }
                             }.lparams {
                                 gravity = Gravity.CENTER_VERTICAL
-                                marginStart = dip(8)
+                                marginStart = dip(sMargin)
                             }
                         }
                     }.lparams(matchParent) {
                         gravity = Gravity.CENTER_HORIZONTAL
-                        bottomOf(R.id.main_image_id)
-                        setMargins(dip(16), dip(16), dip(16), dip(8))
+                        bottomOf(R.id.weather_block_id)
+                        setMargins(dip(16), dip(16), dip(16), 0)
                     }
 
                     ///--------- LINEAR 2
@@ -200,7 +222,7 @@ class MainItem(val imgCode:Int = 0, val locationName:String = "Location", val we
                         linearLayout {
                             lparams(matchParent) {
                                 weight = 1f
-                                rightMargin = dip(8)
+                                rightMargin = dip(rMargin)
                             }
 
                             imageView(R.drawable.ic_icon_sunrise_64dp) {
@@ -225,7 +247,7 @@ class MainItem(val imgCode:Int = 0, val locationName:String = "Location", val we
                         linearLayout {
                             lparams(matchParent) {
                                 weight = 1f
-                                rightMargin = dip(8)
+                                rightMargin = dip(rMargin)
                             }
 
                             imageView(R.drawable.ic_icon_temp_max_64dp) {
@@ -237,20 +259,19 @@ class MainItem(val imgCode:Int = 0, val locationName:String = "Location", val we
                                     textSize = 14f
                                     textColor = Color.WHITE
                                 }.lparams(matchParent)
-                                textView("West") {
+                                textView(R.string.temp_max_txt) {
                                     id = R.id.temp_max_desc_id
                                     textSize = 14f
                                     textColor = Color.LTGRAY
                                 }
                             }.lparams {
                                 gravity = Gravity.CENTER_VERTICAL
-                                marginStart = dip(8)
+                                marginStart = dip(sMargin)
                             }
                         }
                         linearLayout {
                             lparams(matchParent) {
                                 weight = 1f
-                                rightMargin = dip(8)
                             }
 
                             imageView(R.drawable.ic_icon_temp_min_64dp) {
@@ -262,14 +283,14 @@ class MainItem(val imgCode:Int = 0, val locationName:String = "Location", val we
                                     textSize = 14f
                                     textColor = Color.WHITE
                                 }.lparams(matchParent)
-                                textView("West") {
+                                textView(R.string.temp_min_txt) {
                                     id = R.id.temp_min_desc_id
                                     textSize = 14f
                                     textColor = Color.LTGRAY
                                 }
                             }.lparams {
                                 gravity = Gravity.CENTER_VERTICAL
-                                marginStart = dip(8)
+                                marginStart = dip(sMargin)
                             }
                         }
                     }.lparams(matchParent) {

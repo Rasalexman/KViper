@@ -17,12 +17,15 @@ interface IMainPageContract {
     }
 
     interface IView : IBaseView<IPresenter> {
+        fun showLoadingFooter()
         fun onSuccess(list: List<AbstractItem<*, *>>)
         fun onError(error:String)
     }
 
     interface IMainRouter : IRouter<IView> {
+        fun onAllDataReady(list:List<AbstractItem<*,*>>)
         fun onLocationNotEnabledError()
+        fun showLoading()
     }
 
     interface IMainInteractor : IInteractor<IMainInteractorHandler> {

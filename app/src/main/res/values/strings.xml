@@ -3,4 +3,11 @@
     <string name="menu_search">Поиск</string>
     <string name="weather_search_title">Поиск погоды</string>
     <string name="search_weather_hint">Введите город</string>
+    <string name="clear_weather_txt">чистое небо</string>
+    <string name="sunset_txt">Закат</string>
+    <string name="sunrise_txt">Восход</string>
+    <string name="pressure_txt">мм.рт.ст.</string>
+    <string name="temp_min_txt">мин.</string>
+    <string name="temp_max_txt">макс.</string>
+    <string name="wind_speed_txt">м/c</string>
 </resources>

@@ -1,22 +1,34 @@
 package com.mincor.kviper.di.presenters
 
+import android.app.Application
+import android.location.Geocoder
+import com.mikepenz.fastadapter.items.AbstractItem
+import com.mincor.kviper.R
+import com.mincor.kviper.adapters.MainItem
 import com.mincor.kviper.common.tracker.GPSTracker
 import com.mincor.kviper.di.contracts.IMainPageContract
 import com.mincor.kviper.di.interfaces.IWeatherApi
 import com.mincor.kviper.models.WeatherDataResponce
+import com.mincor.kviper.models.items.MainItemModel
 import com.mincor.kviper.models.network.ForecastDataResponce
 import com.mincor.kviper.models.network.ListFindDataResponce
 import com.mincor.kviper.utils.log
 import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.singleton
 import ru.gildor.coroutines.retrofit.await
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.math.floor
+import kotlin.math.round
 
 
-class MainPagePresenter(private val gpsTracker: GPSTracker, weatherApi: IWeatherApi) : IMainPageContract.IPresenter, IMainPageContract.IMainInteractorHandler {
+class MainPagePresenter(private val gpsTracker: GPSTracker, private val appContext: Application, weatherApi: IWeatherApi) : IMainPageContract.IPresenter, IMainPageContract.IMainInteractorHandler {
 
     private var router: IMainPageContract.IMainRouter? = null
     private val interactor: IMainPageContract.IMainInteractor = MainInteractor(this, weatherApi)
@@ -24,6 +36,7 @@ class MainPagePresenter(private val gpsTracker: GPSTracker, weatherApi: IWeather
     override fun bind(v: IMainPageContract.IView) {
         if (gpsTracker.canGetLocation()) {
             router = MainRouter(v)
+            router!!.showLoading()
             interactor.getCurrentLocationWeather(gpsTracker.longitude, gpsTracker.latitude)
         } else {
             gpsTracker.showSettingsAlert()
@@ -44,8 +57,65 @@ class MainPagePresenter(private val gpsTracker: GPSTracker, weatherApi: IWeather
     }
 
     override fun onAllMainDataHandler(weather: WeatherDataResponce, forecast: ForecastDataResponce) {
-        //val dataList = mutableListOf(MainItem(weather.))
+
+        val weatherPlace = weather.name!!
+        val temperature = weather.main?.temp?.let {
+            "${floor(it)}℃"
+        } ?: "12.0℃"
+        val currentWeather = weather.weather?.get(0)
+        val iconId = currentWeather?.id ?: 800
+        val weatherDesc = currentWeather?.description ?: appContext.getString(R.string.clear_weather_txt)
+        val geocoder = Geocoder(appContext.applicationContext, Locale.getDefault())
+        val locationName = try {
+            val listAddresses = geocoder.getFromLocation(gpsTracker.latitude, gpsTracker.longitude, 1)
+            if (listAddresses != null && listAddresses.size > 0) {
+                listAddresses[0].adminArea
+            } else {
+                weatherPlace
+            }
+        } catch (e: IOException) {
+            weatherPlace
+        }
+
+        val windSpeed = "${floor(weather.wind?.speed?:1.0).toInt()} ${appContext.getString(R.string.wind_speed_txt)}"
+        val windDirection = degToCompass(weather.wind?.deg?:0.0)
+
+        val humidity = "${floor(weather.main?.humidity ?: 0.0).toInt()}%"
+        val pressure = "${floor(weather.main?.pressure ?: 762.0).toInt()}"
+
+        val cal = Calendar.getInstance()
+        val currentHour = cal[Calendar.HOUR_OF_DAY]
+
+        val sunsetTime = (weather.sys?.sunset?:0)*1000L
+        val sunriseTime = (weather.sys?.sunrise?:0)*1000L
+
+        cal.timeInMillis = sunsetTime
+        val sunsetHour = cal[Calendar.HOUR_OF_DAY]
+        cal.timeInMillis = sunriseTime
+        val sunriseHour = cal[Calendar.HOUR_OF_DAY]
+
+
+        val daySunDesc = if(currentHour < sunriseHour || currentHour > sunsetHour) appContext.getString(R.string.sunrise_txt) else appContext.getString(R.string.sunset_txt)
+        val daySunValue = if(currentHour < sunriseHour || currentHour > sunsetHour) sunriseTime else sunsetTime
+        val daySunStr = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date(daySunValue))
+
+        val mainItemModel = MainItemModel(
+                iconId, locationName, weatherDesc,
+                temperature, windSpeed, windDirection,
+                humidity, pressure, daySunStr, daySunDesc)
+
+        val dataList = mutableListOf(
+                MainItem(mainItemModel))
+
+        router?.onAllDataReady(dataList)
     }
+
+    private fun degToCompass(num:Double):String {
+        val index = ((num/22.5)+.5)
+        val arr = listOf("Сев.","ССВ","Сев-Вост.","ВСВ","Вост.","ВЮВ", "Юго-Вост.", "ЮЮВ","Южный","ЮЮЗ","Юго-Зап.","ЗЮЗ","Зап.","ЗСЗ","Сев-Зап.","ССЗ")
+        return arr[(index % 16).toInt()]
+    }
+
 
     override fun onResultHandler(result: Any?) {
 
@@ -58,7 +128,7 @@ class MainPagePresenter(private val gpsTracker: GPSTracker, weatherApi: IWeather
             launch(CommonPool) {
                 try {
                     val weatherData = weatherApi.getWeatherByCoords(lat, lon).await()
-                    val weatherForecast = weatherApi.getWeatherForecastById(weatherData.id!!).await()
+                    val weatherForecast = ForecastDataResponce()//weatherApi.getWeatherForecastById(weatherData.id!!).await()
                     output?.onAllMainDataHandler(weatherData, weatherForecast)
                 } catch (e: Throwable) {
                     log { e.message }
@@ -96,8 +166,20 @@ class MainPagePresenter(private val gpsTracker: GPSTracker, weatherApi: IWeather
 
     inner class MainRouter(override var view: IMainPageContract.IView? = null) : IMainPageContract.IMainRouter {
 
+        override fun onAllDataReady(list: List<AbstractItem<*, *>>) {
+            launch(UI) {
+                view?.onSuccess(list)
+            }
+        }
+
+        override fun showLoading() {
+            view?.showLoadingFooter()
+        }
+
         override fun onLocationNotEnabledError() {
-            view?.onError("")
+            launch(UI) {
+                view?.onError("")
+            }
         }
 
         override fun unbind() {
@@ -107,5 +189,5 @@ class MainPagePresenter(private val gpsTracker: GPSTracker, weatherApi: IWeather
 }
 
 val mainModule = Kodein.Module {
-    bind<IMainPageContract.IPresenter>() with singleton { MainPagePresenter(instance(), instance()) }
+    bind<IMainPageContract.IPresenter>() with singleton { MainPagePresenter(instance(), instance(), instance()) }
 }

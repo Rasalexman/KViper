@@ -24,4 +24,9 @@
     <item name="temp_max_desc_id" type="id" />
     <item name="temp_min_value_id" type="id" />
     <item name="temp_min_desc_id" type="id" />
+    <item name="weather_block_id" type="id" />
+    <item name="tab_icon" type="id" />
+    <item name="tab_header" type="id" />
+    <item name="main_lay" type="id" />
+    <item name="main_tab" type="id" />
 </resources>
