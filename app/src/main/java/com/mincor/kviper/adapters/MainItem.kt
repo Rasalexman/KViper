@@ -111,23 +111,25 @@ class MainItem(val imgCode:Int = 0, val locationName:String = "Location", val we
                     linearLayout {
                         id = R.id.linear_icons_one_id
 
+                        // WIND
                         linearLayout {
                             lparams(matchParent) {
                                 weight = 1f
                                 rightMargin = dip(8)
                             }
 
-                            imageView {
-                                backgroundColor = Color.BLACK
+                            imageView(R.drawable.ic_icon_wind_64dp) {
                             }.lparams(dip(iconsSize), dip(iconsSize))
 
                             verticalLayout {
                                 textView("4 mph") {
+                                    id = R.id.wind_value_id
                                     backgroundColor = Color.TRANSPARENT
                                     textSize = 14f
                                     textColor = Color.WHITE
                                 }.lparams(matchParent)
                                 textView("West") {
+                                    id = R.id.wind_desc_id
                                     textSize = 14f
                                     textColor = Color.LTGRAY
                                 }
@@ -142,17 +144,18 @@ class MainItem(val imgCode:Int = 0, val locationName:String = "Location", val we
                                 rightMargin = dip(8)
                             }
 
-                            imageView {
-                                backgroundColor = Color.BLACK
+                            imageView(R.drawable.ic_icon_humidity_64dp) {
                             }.lparams(dip(iconsSize), dip(iconsSize))
 
                             verticalLayout {
                                 textView("4 mph") {
+                                    id = R.id.humidity_value_id
                                     backgroundColor = Color.TRANSPARENT
                                     textSize = 14f
                                     textColor = Color.WHITE
                                 }.lparams(matchParent)
                                 textView("West") {
+                                    id = R.id.humidity_desc_id
                                     textSize = 14f
                                     textColor = Color.LTGRAY
                                 }
@@ -167,16 +170,17 @@ class MainItem(val imgCode:Int = 0, val locationName:String = "Location", val we
                                 rightMargin = dip(8)
                             }
 
-                            imageView {
-                                backgroundColor = Color.BLACK
+                            imageView(R.drawable.ic_icon_pressure_64dp) {
                             }.lparams(dip(iconsSize), dip(iconsSize))
 
                             verticalLayout {
                                 textView("4 mph") {
+                                    id = R.id.pressure_value_id
                                     textSize = 14f
                                     textColor = Color.WHITE
                                 }.lparams(matchParent)
                                 textView("West") {
+                                    id = R.id.pressure_desc_id
                                     textSize = 14f
                                     textColor = Color.LTGRAY
                                 }
@@ -199,17 +203,17 @@ class MainItem(val imgCode:Int = 0, val locationName:String = "Location", val we
                                 rightMargin = dip(8)
                             }
 
-                            imageView {
-                                backgroundColor = Color.BLACK
+                            imageView(R.drawable.ic_icon_sunrise_64dp) {
                             }.lparams(dip(iconsSize), dip(iconsSize))
 
                             verticalLayout {
                                 textView("4 mph") {
-                                    backgroundColor = Color.TRANSPARENT
+                                    id = R.id.sun_value_id
                                     textSize = 14f
                                     textColor = Color.WHITE
                                 }.lparams(matchParent)
                                 textView("West") {
+                                    id = R.id.sun_desc_id
                                     textSize = 14f
                                     textColor = Color.LTGRAY
                                 }
@@ -224,17 +228,17 @@ class MainItem(val imgCode:Int = 0, val locationName:String = "Location", val we
                                 rightMargin = dip(8)
                             }
 
-                            imageView {
-                                backgroundColor = Color.BLACK
+                            imageView(R.drawable.ic_icon_temp_max_64dp) {
                             }.lparams(dip(iconsSize), dip(iconsSize))
 
                             verticalLayout {
                                 textView("4 mph") {
-                                    backgroundColor = Color.TRANSPARENT
+                                    id = R.id.temp_max_value_id
                                     textSize = 14f
                                     textColor = Color.WHITE
                                 }.lparams(matchParent)
                                 textView("West") {
+                                    id = R.id.temp_max_desc_id
                                     textSize = 14f
                                     textColor = Color.LTGRAY
                                 }
@@ -249,16 +253,17 @@ class MainItem(val imgCode:Int = 0, val locationName:String = "Location", val we
                                 rightMargin = dip(8)
                             }
 
-                            imageView {
-                                backgroundColor = Color.BLACK
+                            imageView(R.drawable.ic_icon_temp_min_64dp) {
                             }.lparams(dip(iconsSize), dip(iconsSize))
 
                             verticalLayout {
                                 textView("4 mph") {
+                                    id = R.id.temp_min_value_id
                                     textSize = 14f
                                     textColor = Color.WHITE
                                 }.lparams(matchParent)
                                 textView("West") {
+                                    id = R.id.temp_min_desc_id
                                     textSize = 14f
                                     textColor = Color.LTGRAY
                                 }

@@ -84,7 +84,6 @@ fun createOkHttpClient(cachedDir: File): OkHttpClient {
 
 inline fun <reified F> createWebServiceApi(okHttpClient: OkHttpClient, url: String): F {
     val gsonInstance = GsonBuilder()
-            //.registerTypeAdapter(Content::class.java, ContentDeserializer())
             .create()
 
     /*val defVal = Content()
@@ -102,6 +101,7 @@ inline fun <reified F> createWebServiceApi(okHttpClient: OkHttpClient, url: Stri
             .build()
     return retrofit.create(F::class.java)
 }
+
 
 /*
 class ContentDeserializer : JsonDeserializer<Content> {

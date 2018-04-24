@@ -12,4 +12,16 @@
     <item name="weather_desc_id" type="id" />
     <item name="temperature_id" type="id" />
     <item name="linear_icons_one_id" type="id" />
+    <item name="wind_value_id" type="id" />
+    <item name="wind_desc_id" type="id" />
+    <item name="humidity_value_id" type="id" />
+    <item name="humidity_desc_id" type="id" />
+    <item name="pressure_value_id" type="id" />
+    <item name="pressure_desc_id" type="id" />
+    <item name="sun_value_id" type="id" />
+    <item name="sun_desc_id" type="id" />
+    <item name="temp_max_value_id" type="id" />
+    <item name="temp_max_desc_id" type="id" />
+    <item name="temp_min_value_id" type="id" />
+    <item name="temp_min_desc_id" type="id" />
 </resources>

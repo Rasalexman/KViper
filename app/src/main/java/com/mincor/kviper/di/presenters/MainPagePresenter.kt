@@ -1,6 +1,5 @@
 package com.mincor.kviper.di.presenters
 
-import com.mincor.kviper.adapters.MainItem
 import com.mincor.kviper.common.tracker.GPSTracker
 import com.mincor.kviper.di.contracts.IMainPageContract
 import com.mincor.kviper.di.interfaces.IWeatherApi
