@@ -60,8 +60,8 @@ class MainPagePresenter(private val gpsTracker: GPSTracker, private val appConte
 
         val weatherPlace = weather.name!!
         val temperature = weather.main?.temp?.let {
-            "${floor(it)}℃"
-        } ?: "12.0℃"
+            "${floor(it).toInt()}℃"
+        } ?: "12℃"
         val currentWeather = weather.weather?.get(0)
         val iconId = currentWeather?.id ?: 800
         val weatherDesc = currentWeather?.description ?: appContext.getString(R.string.clear_weather_txt)
@@ -112,7 +112,7 @@ class MainPagePresenter(private val gpsTracker: GPSTracker, private val appConte
 
     private fun degToCompass(num:Double):String {
         val index = ((num/22.5)+.5)
-        val arr = listOf("Сев.","ССВ","Сев-Вост.","ВСВ","Вост.","ВЮВ", "Юго-Вост.", "ЮЮВ","Южный","ЮЮЗ","Юго-Зап.","ЗЮЗ","Зап.","ЗСЗ","Сев-Зап.","ССЗ")
+        val arr = listOf("Сев.","ССВ","СВ.","ВСВ","Вост.","ВЮВ", "ЮВ", "ЮЮВ","Южный","ЮЮЗ","ЮЗ","ЗЮЗ","Зап.","ЗСЗ","СЗ","ССЗ")
         return arr[(index % 16).toInt()]
     }
 

@@ -96,41 +96,38 @@ class MainItem(val model:MainItemModel) : AbstractItem<MainItem, MainItem.ViewHo
 
                     linearLayout {
                         id = R.id.weather_block_id
-                        imageView {
-                            id = R.id.main_image_id
+
+                        textView("1.0\u2103"){
+                            id = R.id.temperature_id
+                            textColor = Color.WHITE
+                            textSize = 26f
+                            typeface = Typeface.DEFAULT_BOLD
                         }
 
                         verticalLayout {
                             textView("YOUR CITY") {
                                 id = R.id.location_name_id
                                 textColor = Color.WHITE
-                                textSize = 16f
+                                textSize = 18f
                                 typeface = Typeface.DEFAULT_BOLD
-                                maxWidth = dip(150)
-                            }
+                            }.lparams(matchParent)
                             textView("Clear sky") {
                                 id = R.id.weather_desc_id
                                 textColor = Color.LTGRAY
                                 textSize = 16f
-                            }
-                        }.lparams {
+                            }.lparams(matchParent)
+                        }.lparams(matchParent) {
                             gravity = Gravity.CENTER_VERTICAL
-                            setMargins(dip(8), 0, 0, 0)
+                            setMargins(dip(8), 0, dip(8), 0)
                         }
-                    }.lparams {
-                        alignParentLeft()
-                        setMargins(dip(16), dip(16),0,0)
-                    }
 
+                        imageView {
+                            id = R.id.main_image_id
+                        }.lparams(dip(64), dip(64))
 
-                    textView("1.0\u2103"){
-                        id = R.id.temperature_id
-                        textColor = Color.WHITE
-                        textSize = 26f
-                        typeface = Typeface.DEFAULT_BOLD
-                    }.lparams {
-                        alignParentRight()
-                        setMargins(0, dip(16), dip(16), 0)
+                    }.lparams(matchParent) {
+                        gravity = Gravity.CENTER_VERTICAL
+                        setMargins(dip(16), dip(16), dip(16),0)
                     }
 
                     val iconsSize = 36
@@ -214,7 +211,7 @@ class MainItem(val model:MainItemModel) : AbstractItem<MainItem, MainItem.ViewHo
                     }.lparams(matchParent) {
                         gravity = Gravity.CENTER_HORIZONTAL
                         bottomOf(R.id.weather_block_id)
-                        setMargins(dip(16), dip(16), dip(16), 0)
+                        setMargins(dip(16), dip(8), dip(16), 0)
                     }
 
                     ///--------- LINEAR 2
