@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">KViper</string>
-    <string name="menu_search">Поиск</string>
     <string name="weather_search_title">Поиск погоды</string>
     <string name="search_weather_hint">Введите город</string>
     <string name="clear_weather_txt">чистое небо</string>
@@ -10,4 +9,11 @@
     <string name="temp_min_txt">мин.</string>
     <string name="temp_max_txt">макс.</string>
     <string name="wind_speed_txt">м/c</string>
+
+    <!-- MENU ICONS NAMES -->
+    <string name="menu_weather">Погода</string>
+    <string name="menu_list">Список</string>
+    <string name="menu_search">Поиск</string>
+    <string name="menu_map">Карта</string>
+    <string name="menu_menu">Меню</string>
 </resources>

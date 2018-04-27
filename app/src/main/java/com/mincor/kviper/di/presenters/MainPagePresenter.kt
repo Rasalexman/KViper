@@ -20,7 +20,9 @@ import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.singleton
+import ru.gildor.coroutines.retrofit.Result
 import ru.gildor.coroutines.retrofit.await
+import ru.gildor.coroutines.retrofit.awaitResult
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -126,7 +128,15 @@ class MainPagePresenter(private val gpsTracker: GPSTracker, private val appConte
 
         override fun getCurrentLocationWeather(lon: Double, lat: Double) {
             launch(CommonPool) {
-                try {
+
+                val result = weatherApi.getWeatherByCoords(lat, lon).awaitResult()
+                when(result){
+                    is Result.Ok -> output?.onAllMainDataHandler(result.value, ForecastDataResponce())
+                    is Result.Error,
+                    is Result.Exception -> output?.onErrorHandler()
+                }
+
+                /*try {
                     val weatherData = weatherApi.getWeatherByCoords(lat, lon).await()
                     val weatherForecast = ForecastDataResponce()//weatherApi.getWeatherForecastById(weatherData.id!!).await()
                     output?.onAllMainDataHandler(weatherData, weatherForecast)
@@ -136,7 +146,7 @@ class MainPagePresenter(private val gpsTracker: GPSTracker, private val appConte
                 } catch (e: Exception) {
                     log { e.message }
                     output?.onErrorHandler()
-                }
+                }*/
             }
         }
 

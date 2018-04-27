@@ -13,6 +13,7 @@ import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.Router
 import com.mincor.kviper.R
 import com.mincor.kviper.utils.color
+import com.mincor.kviper.utils.string
 import com.mincor.kviper.utils.wdthProc
 import com.mincor.kviper.viper.baseui.BaseController
 import org.jetbrains.anko.*
@@ -35,11 +36,9 @@ class TabBarController : BaseController(), TabLayout.OnTabSelectedListener {
     private var currentController: Controller? = null
 
     override fun getViewInstance(context: Context) = TabBarUI().createView(AnkoContext.create(context, this))
-/*
 
-    private val selectedIcons = listOf(R.drawable.ic_tab_bar_main_filled_20, R.drawable.ic_tab_bar_news_filled_20, R.drawable.ic_tab_bar_search_filled_20, R.drawable.ic_tab_bar_bookmark_filled_20, R.drawable.ic_tab_bar_menu_filled_20)
-    private val unSelectedIcons = listOf(R.drawable.ic_tab_bar_main_stroked_20, R.drawable.ic_tab_bar_news_stroked_20, R.drawable.ic_tab_bar_search_stroked_20, R.drawable.ic_tab_bar_bookmark_stroked_20, R.drawable.ic_tab_bar_menu_stroked_20)
-*/
+    private val iconsIds = listOf(R.drawable.ic_tab_one_24dp, R.drawable.ic_list_white_24dp, R.drawable.ic_search_white_24dp, R.drawable.ic_map_white_24dp, R.drawable.ic_account_box_white_24dp)
+    //private val unSelectedIcons = listOf(R.drawable.ic_tab_bar_main_stroked_20, R.drawable.ic_tab_bar_news_stroked_20, R.drawable.ic_tab_bar_search_stroked_20, R.drawable.ic_tab_bar_bookmark_stroked_20, R.drawable.ic_tab_bar_menu_stroked_20)
 
     override fun onAttach(view: View) {
         super.onAttach(view)
@@ -175,14 +174,14 @@ class TabBarController : BaseController(), TabLayout.OnTabSelectedListener {
                 tabLayout = tabLayout {
                     id = R.id.main_tab
                     tabMode = TabLayout.MODE_FIXED
-                    /*backgroundColor = color(R.color.colorRed)
+                    //backgroundColor = color(R.color.colorRed)
+                    //setSelectedTabIndicatorColor(color(R.color.colorRed))
 
-                    setSelectedTabIndicatorColor(color(R.color.colorRed))
-                    addTab(createTab(this.newTab(), context, unSelectedIcons[0], string(R.string.menu_main)))
-                    addTab(createTab(this.newTab(), context, unSelectedIcons[1], string(R.string.menu_news)))
-                    addTab(createTab(this.newTab(), context, unSelectedIcons[2], string(R.string.menu_search)))
-                    addTab(createTab(this.newTab(), context, unSelectedIcons[3], string(R.string.menu_bookmarks)))
-                    addTab(createTab(this.newTab(), context, unSelectedIcons[4], string(R.string.menu_menu)))*/
+                    addTab(createTab(this.newTab(), context, iconsIds[0], string(R.string.menu_weather)))
+                    addTab(createTab(this.newTab(), context, iconsIds[1], string(R.string.menu_list)))
+                    addTab(createTab(this.newTab(), context, iconsIds[2], string(R.string.menu_search)))
+                    addTab(createTab(this.newTab(), context, iconsIds[3], string(R.string.menu_map)))
+                    addTab(createTab(this.newTab(), context, iconsIds[4], string(R.string.menu_menu)))
 
                     addOnTabSelectedListener(this@TabBarController)
                 }.lparams(matchParent, dip(72)) {
