@@ -118,7 +118,6 @@ class TabBarController : BaseController(), TabLayout.OnTabSelectedListener {
             currentSelectedTF?.setTypeface(null, Typeface.NORMAL)
             //currentSelectedImg?.setImageResource(unSelectedIcons[mPosition])
 
-            // TODO: NEED TO CHANGE findViewById
             currentSelectedTF = tab.customView!!.find(R.id.tab_header)
             currentSelectedTF?.setTypeface(null, Typeface.BOLD)
 

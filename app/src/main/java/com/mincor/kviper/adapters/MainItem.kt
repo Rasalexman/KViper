@@ -23,7 +23,7 @@ import ru.fortgroup.dpru.adapters.IDataHolder
  * Created by Alex on 07.01.2017.
  */
 
-class MainItem(val model:MainItemModel) : AbstractItem<MainItem, MainItem.ViewHolder>(), IDataHolder {
+class MainItem(val model: MainItemModel) : AbstractItem<MainItem, MainItem.ViewHolder>(), IDataHolder {
 
     override fun createView(ctx: Context, parent: ViewGroup?): View = MainItemUI().createView(AnkoContext.create(ctx, this))
     override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
@@ -75,15 +75,14 @@ class MainItem(val model:MainItemModel) : AbstractItem<MainItem, MainItem.ViewHo
         }
 
         override fun unbindView(item: MainItem?) {
-           /* mainImage.clear()
-            mainAuthor.text = null
-            mainTitle.text = null
-            mainTag.text = null*/
+            /* mainImage.clear()
+             mainAuthor.text = null
+             mainTitle.text = null
+             mainTag.text = null*/
         }
     }
 
     inner class MainItemUI : AnkoComponent<MainItem> {
-
 
         override fun createView(ui: AnkoContext<MainItem>): View = with(ui) {
             frameLayout {
@@ -94,40 +93,56 @@ class MainItem(val model:MainItemModel) : AbstractItem<MainItem, MainItem.ViewHo
                     background = roundedBg(Color.parseColor("#7987C8"), 16f)
                     id = R.id.rounded_bg
 
-                    linearLayout {
+                    //----- Текущая погода и город
+                    verticalLayout {
                         id = R.id.weather_block_id
 
-                        textView("1.0\u2103"){
-                            id = R.id.temperature_id
+                        //--- НАЗВАНИЕ МЕСТОПОЛОЖЕНИЯ
+                        textView("YOUR CITY") {
+                            id = R.id.location_name_id
                             textColor = Color.WHITE
-                            textSize = 26f
+                            textSize = 18f
                             typeface = Typeface.DEFAULT_BOLD
-                        }
+                        }.lparams(matchParent)
+                        //------
 
-                        verticalLayout {
-                            textView("YOUR CITY") {
-                                id = R.id.location_name_id
-                                textColor = Color.WHITE
-                                textSize = 18f
-                                typeface = Typeface.DEFAULT_BOLD
-                            }.lparams(matchParent)
-                            textView("Clear sky") {
-                                id = R.id.weather_desc_id
-                                textColor = Color.LTGRAY
-                                textSize = 16f
-                            }.lparams(matchParent)
+                        linearLayout {
+
+                            ///---- КАРТИНКА
+                            imageView {
+                                id = R.id.main_image_id
+                            }.lparams(dip(64), dip(64))
+                            //----
+
+                            verticalLayout {
+                                ///----- ТЕМПЕРАТУРА ВОЗДУХА
+                                textView("1.0\u2103") {
+                                    id = R.id.temperature_id
+                                    textColor = Color.WHITE
+                                    textSize = 26f
+                                    typeface = Typeface.DEFAULT_BOLD
+                                }
+
+                                //------- ОПИСАНИЕ ПОГОДЫ (ЯСНО, ПАСМУРНО и тд...)
+                                textView("Clear sky") {
+                                    id = R.id.weather_desc_id
+                                    textColor = Color.LTGRAY
+                                    textSize = 16f
+                                }.lparams(matchParent)
+
+                            }.lparams {
+                                leftMargin = dip(16)
+                                gravity = Gravity.CENTER_VERTICAL
+                            }
+
                         }.lparams(matchParent) {
                             gravity = Gravity.CENTER_VERTICAL
-                            setMargins(dip(8), 0, dip(8), 0)
+                            topMargin = dip(8)
                         }
-
-                        imageView {
-                            id = R.id.main_image_id
-                        }.lparams(dip(64), dip(64))
 
                     }.lparams(matchParent) {
                         gravity = Gravity.CENTER_VERTICAL
-                        setMargins(dip(16), dip(16), dip(16),0)
+                        setMargins(dip(16), dip(16), dip(16), 0)
                     }
 
                     val iconsSize = 36
@@ -293,26 +308,25 @@ class MainItem(val model:MainItemModel) : AbstractItem<MainItem, MainItem.ViewHo
                     }.lparams(matchParent) {
                         gravity = Gravity.CENTER_HORIZONTAL
                         bottomOf(R.id.linear_icons_one_id)
-                        setMargins(dip(16), 0, dip(16), dip(16))
+                        setMargins(dip(16), 0, dip(16), dip(20))
                     }
 
-
-                }.lparams(matchParent, (context.displayMetrics.widthPixels / 16) * 9) {
-                    setMargins(dip(16),dip(16), dip(16), dip(16))
+                }.lparams(matchParent) {  //(context.displayMetrics.widthPixels / 16) * 9
+                    setMargins(dip(16), dip(16), dip(16), dip(16))
                 }
 
                 view {
                     background = roundedBg(Color.parseColor("#1B1B1B")) //
                 }.lparams(dip(24), dip(24)) {
                     gravity = Gravity.BOTTOM
-                    setMargins(dip(36),  0,0, dip(8))
+                    setMargins(dip(36), 0, 0, dip(8))
                 }
 
                 view {
                     background = roundedBg(Color.WHITE) //
-                }.lparams(dip(16),dip(16)) {
+                }.lparams(dip(16), dip(16)) {
                     gravity = Gravity.BOTTOM
-                    setMargins(dip(40),  0,0, dip(12))
+                    setMargins(dip(40), 0, 0, dip(12))
                 }
 
 
@@ -320,7 +334,7 @@ class MainItem(val model:MainItemModel) : AbstractItem<MainItem, MainItem.ViewHo
                     backgroundColor = Color.WHITE
                 }.lparams(dip(2), dip(16)) {
                     gravity = Gravity.BOTTOM
-                    setMargins(dip(47),  0,0, 0)
+                    setMargins(dip(47), 0, 0, 0)
                 }
             }
         }
