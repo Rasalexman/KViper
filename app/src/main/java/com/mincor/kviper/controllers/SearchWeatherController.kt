@@ -11,7 +11,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import com.mikepenz.fastadapter.items.AbstractItem
-import com.mincor.kviper.R
+import com.mincor.weatherme.R
 import com.mincor.kviper.adapters.DoubleCircleItem
 import com.mincor.kviper.adapters.MainItem
 import com.mincor.kviper.adapters.NextItem
@@ -47,8 +47,6 @@ class SearchWeatherController : BaseActionBarRecyclerController(), SearchView.On
     override fun onAttach(view: View) {
         super.onAttach(view)
         presenter.bind(this)
-
-        //onSuccess(listOf(MainItem(), NextItem(), DoubleCircleItem(), NextItem(), DoubleCircleItem()))
 
     }
 

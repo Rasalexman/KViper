@@ -2,6 +2,7 @@ package com.mincor.kviper.di.contracts
 
 import com.mikepenz.fastadapter.items.AbstractItem
 import com.mincor.kviper.models.WeatherDataResponce
+import com.mincor.kviper.models.items.MainItemModel
 import com.mincor.kviper.models.network.ForecastDataResponce
 import com.mincor.kviper.models.network.ListFindDataResponce
 import com.mincor.kviper.viper.core.iteractor.IInteractor
@@ -34,7 +35,7 @@ interface IMainPageContract {
     }
 
     interface IMainInteractorHandler : IInteractorHandler {
-        fun onAllMainDataHandler(weather:WeatherDataResponce, forecast:ForecastDataResponce)
+        fun onAllMainDataHandler(weatherList: List<AbstractItem<*,*>>)
         fun onSearchedWeatherListHandler(weatherListResponce:ListFindDataResponce?)
     }
 

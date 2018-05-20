@@ -1,6 +1,6 @@
 package com.mincor.kviper.adapters.icons
 
-import com.mincor.kviper.R
+import com.mincor.weatherme.R
 
 object IconsCreator {
 

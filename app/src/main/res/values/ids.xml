@@ -29,4 +29,8 @@
     <item name="tab_header" type="id" />
     <item name="main_lay" type="id" />
     <item name="main_tab" type="id" />
+    <item name="main_refresh_layout_id" type="id" />
+    <item name="time_temp_id" type="id" />
+    <item name="image_temp_id" type="id" />
+    <item name="map_view_id" type="id" />
 </resources>

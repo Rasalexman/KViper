@@ -2,7 +2,6 @@ package com.mincor.kviper.activity
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Rect
 import android.os.Build
@@ -17,8 +16,7 @@ import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import com.mincor.kviper.consts.Consts
-import com.mincor.kviper.controllers.MainPageController
-import com.mincor.kviper.controllers.SearchWeatherController
+import com.mincor.kviper.controllers.TabBarController
 import com.mincor.kviper.viper.baseui.actionbar.ActionBarProvider
 import org.jetbrains.anko.frameLayout
 import org.jetbrains.anko.matchParent
@@ -49,7 +47,7 @@ class MainActivity : AppCompatActivity(), ActionBarProvider {
 
         if (!mainRouter!!.hasRootController()) {
             // показываем экран предзагрузки пока проверяем подписку
-            mainRouter!!.setRoot(RouterTransaction.with(MainPageController()))
+            mainRouter!!.setRoot(RouterTransaction.with(TabBarController()))
         }
     }
 

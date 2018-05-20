@@ -1,6 +1,6 @@
 package com.mincor.kviper.utils
 
-import com.mincor.kviper.BuildConfig
+import com.mincor.weatherme.BuildConfig
 
 /**
  * Created by Alex on 05.11.2015.

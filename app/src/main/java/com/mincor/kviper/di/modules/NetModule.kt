@@ -3,7 +3,7 @@ package com.mincor.kviper.di.modules
 import com.google.gson.GsonBuilder
 import com.ihsanbal.logging.Level
 import com.ihsanbal.logging.LoggingInterceptor
-import com.mincor.kviper.BuildConfig
+import com.mincor.weatherme.BuildConfig
 import com.mincor.kviper.common.tracker.GPSTracker
 import com.mincor.kviper.consts.Consts
 import com.mincor.kviper.consts.Consts.API_KEY

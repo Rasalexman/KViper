@@ -2,6 +2,7 @@ package com.mincor.kviper.adapters
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -16,11 +17,11 @@ import ru.fortgroup.dpru.adapters.IDataHolder
  * Created by Alex on 07.01.2017.
  */
 
-class DoubleCircleItem() : AbstractItem<DoubleCircleItem, DoubleCircleItem.ViewHolder>(), IDataHolder {
+class TemperatiureItem : AbstractItem<TemperatiureItem, TemperatiureItem.ViewHolder>(), IDataHolder {
 
-    override fun createView(ctx: Context, parent: ViewGroup?): View = NextItemUI().createView(AnkoContext.create(ctx, this))
+    override fun createView(ctx: Context, parent: ViewGroup?): View = TemperatureUI().createView(AnkoContext.create(ctx, this))
     override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
-    override fun getType(): Int = R.id.double_c_item_id
+    override fun getType(): Int = R.id.next_item_id
     override fun getLayoutRes(): Int = -1
 
     /**
@@ -49,7 +50,7 @@ class DoubleCircleItem() : AbstractItem<DoubleCircleItem, DoubleCircleItem.ViewH
     /**
      * our ViewHolder
      */
-    class ViewHolder(view: View) : FastAdapter.ViewHolder<DoubleCircleItem>(view) {
+    class ViewHolder(view: View) : FastAdapter.ViewHolder<TemperatiureItem>(view) {
         /*val mainAuthor: TextView = view.find(R.id.text_main_author)
         val mainTag: TextView = view.find(R.id.text_main_rubric)
 
@@ -57,7 +58,7 @@ class DoubleCircleItem() : AbstractItem<DoubleCircleItem, DoubleCircleItem.ViewH
         private val imageProgress: ProgressBar = view.find(R.id.image_loader)
         private val mainTitle: TextView = view.find(R.id.text_main_title)*/
 
-        override fun bindView(item: DoubleCircleItem, payloads: MutableList<Any>?) {
+        override fun bindView(item: TemperatiureItem, payloads: MutableList<Any>?) {
             /*mainAuthor.text = item.author
             mainTitle.text = item.title.fromHTML(mainTitle.context)
 
@@ -73,7 +74,7 @@ class DoubleCircleItem() : AbstractItem<DoubleCircleItem, DoubleCircleItem.ViewH
             }*/
         }
 
-        override fun unbindView(item: DoubleCircleItem?) {
+        override fun unbindView(item: TemperatiureItem?) {
            /* mainImage.clear()
             mainAuthor.text = null
             mainTitle.text = null
@@ -81,17 +82,39 @@ class DoubleCircleItem() : AbstractItem<DoubleCircleItem, DoubleCircleItem.ViewH
         }
     }
 
-    inner class NextItemUI : AnkoComponent<DoubleCircleItem> {
-        override fun createView(ui: AnkoContext<DoubleCircleItem>): View = with(ui) {
+    inner class TemperatureUI : AnkoComponent<TemperatiureItem> {
+        override fun createView(ui: AnkoContext<TemperatiureItem>): View = with(ui) {
             frameLayout {
-
+                //backgroundColor = Color.parseColor("#7987C8")//color(R.color.colorRed)
                 id = R.id.main_item_lay
                 lparams(matchParent)
 
                 relativeLayout {
                     background = roundedBg(Color.parseColor("#7582C1"), 16f)
                     id = R.id.rounded_bg
-                }.lparams(matchParent, (context.displayMetrics.widthPixels / 16) * 9) {
+
+                    textView("15") {
+                        id = R.id.time_temp_id
+                        textSize = 14f
+                        typeface = Typeface.DEFAULT_BOLD
+                        textColor = Color.WHITE
+                    }.lparams {
+                        alignParentRight()
+                        alignParentTop()
+                        rightMargin = dip(8)
+                        topMargin = dip(8)
+                    }
+
+                    imageView {
+                        id = R.id.image_temp_id
+                        backgroundColor = Color.BLACK
+                    }.lparams(dip(64),dip(64)){
+                        rightOf(R.id.time_temp_id)
+                        leftMargin = dip(16)
+                        centerVertically()
+                    }
+
+                }.lparams(matchParent, dip(86)) {
                     setMargins(dip(16),dip(16), dip(16), dip(16))
                 }
 

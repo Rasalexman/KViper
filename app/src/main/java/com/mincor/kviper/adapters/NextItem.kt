@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
-import com.mincor.kviper.R
+import com.mincor.weatherme.R
 import org.jetbrains.anko.*
 import ru.fortgroup.dpru.adapters.IDataHolder
 

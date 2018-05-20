@@ -7,15 +7,13 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
-import com.mincor.kviper.R
 import com.mincor.kviper.adapters.icons.IconsCreator
 import com.mincor.kviper.models.items.MainItemModel
-import com.mincor.kviper.utils.color
 import com.mincor.kviper.utils.roundedBg
+import com.mincor.weatherme.R
 import org.jetbrains.anko.*
 import ru.fortgroup.dpru.adapters.IDataHolder
 

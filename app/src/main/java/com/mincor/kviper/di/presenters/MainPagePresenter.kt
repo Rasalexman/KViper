@@ -3,9 +3,11 @@ package com.mincor.kviper.di.presenters
 import android.app.Application
 import android.location.Geocoder
 import com.mikepenz.fastadapter.items.AbstractItem
-import com.mincor.kviper.R
+import com.mincor.weatherme.R
 import com.mincor.kviper.adapters.MainItem
+import com.mincor.kviper.adapters.TemperatiureItem
 import com.mincor.kviper.common.tracker.GPSTracker
+import com.mincor.kviper.db.WeatherDB
 import com.mincor.kviper.di.contracts.IMainPageContract
 import com.mincor.kviper.di.interfaces.IWeatherApi
 import com.mincor.kviper.models.WeatherDataResponce
@@ -13,6 +15,7 @@ import com.mincor.kviper.models.items.MainItemModel
 import com.mincor.kviper.models.network.ForecastDataResponce
 import com.mincor.kviper.models.network.ListFindDataResponce
 import com.mincor.kviper.utils.log
+import com.raizlabs.android.dbflow.kotlinextensions.save
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
@@ -58,58 +61,8 @@ class MainPagePresenter(private val gpsTracker: GPSTracker, private val appConte
 
     }
 
-    override fun onAllMainDataHandler(weather: WeatherDataResponce, forecast: ForecastDataResponce) {
-
-        val weatherPlace = weather.name!!
-        val temperature = weather.main?.temp?.let {
-            "${floor(it).toInt()}℃"
-        } ?: "12℃"
-        val currentWeather = weather.weather?.get(0)
-        val iconId = currentWeather?.id ?: 800
-        val weatherDesc = currentWeather?.description ?: appContext.getString(R.string.clear_weather_txt)
-        val geocoder = Geocoder(appContext.applicationContext, Locale.getDefault())
-        val locationName = try {
-            val listAddresses = geocoder.getFromLocation(gpsTracker.latitude, gpsTracker.longitude, 1)
-            if (listAddresses != null && listAddresses.size > 0) {
-                listAddresses[0].adminArea
-            } else {
-                weatherPlace
-            }
-        } catch (e: IOException) {
-            weatherPlace
-        }
-
-        val windSpeed = "${floor(weather.wind?.speed?:1.0).toInt()} ${appContext.getString(R.string.wind_speed_txt)}"
-        val windDirection = degToCompass(weather.wind?.deg?:0.0)
-
-        val humidity = "${floor(weather.main?.humidity ?: 0.0).toInt()}%"
-        val pressure = "${floor(weather.main?.pressure ?: 762.0).toInt()}"
-
-        val cal = Calendar.getInstance()
-        val currentHour = cal[Calendar.HOUR_OF_DAY]
-
-        val sunsetTime = (weather.sys?.sunset?:0)*1000L
-        val sunriseTime = (weather.sys?.sunrise?:0)*1000L
-
-        cal.timeInMillis = sunsetTime
-        val sunsetHour = cal[Calendar.HOUR_OF_DAY]
-        cal.timeInMillis = sunriseTime
-        val sunriseHour = cal[Calendar.HOUR_OF_DAY]
-
-
-        val daySunDesc = if(currentHour < sunriseHour || currentHour > sunsetHour) appContext.getString(R.string.sunrise_txt) else appContext.getString(R.string.sunset_txt)
-        val daySunValue = if(currentHour < sunriseHour || currentHour > sunsetHour) sunriseTime else sunsetTime
-        val daySunStr = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date(daySunValue))
-
-        val mainItemModel = MainItemModel(
-                iconId, locationName, weatherDesc,
-                temperature, windSpeed, windDirection,
-                humidity, pressure, daySunStr, daySunDesc)
-
-        val dataList = mutableListOf(
-                MainItem(mainItemModel))
-
-        router?.onAllDataReady(dataList)
+    override fun onAllMainDataHandler(weatherList: List<AbstractItem<*,*>>) {
+        router?.onAllDataReady(weatherList)
     }
 
     private fun degToCompass(num:Double):String {
@@ -128,26 +81,89 @@ class MainPagePresenter(private val gpsTracker: GPSTracker, private val appConte
 
         override fun getCurrentLocationWeather(lon: Double, lat: Double) {
             launch(CommonPool) {
-
-                val result = weatherApi.getWeatherByCoords(lat, lon).awaitResult()
-                when(result){
-                    is Result.Ok -> output?.onAllMainDataHandler(result.value, ForecastDataResponce())
-                    is Result.Error,
-                    is Result.Exception -> output?.onErrorHandler()
-                }
-
-                /*try {
+                try {
                     val weatherData = weatherApi.getWeatherByCoords(lat, lon).await()
-                    val weatherForecast = ForecastDataResponce()//weatherApi.getWeatherForecastById(weatherData.id!!).await()
-                    output?.onAllMainDataHandler(weatherData, weatherForecast)
+                    val weatherForecast = weatherApi.getWeatherForecastById(weatherData.id!!).await()
+                    //output?.onAllMainDataHandler(weatherData, weatherForecast)
+                    parseWeatherRespond(weatherData, weatherForecast)
                 } catch (e: Throwable) {
                     log { e.message }
                     output?.onErrorHandler()
                 } catch (e: Exception) {
                     log { e.message }
                     output?.onErrorHandler()
-                }*/
+                }
             }
+        }
+
+        private fun parseWeatherRespond(weather: WeatherDataResponce, forecast: ForecastDataResponce) {
+
+            var mainItemModel = WeatherDB.weatherModel
+            //
+            val weatherPlace = weather.name!!
+            val temperature = weather.main?.temp?.let {
+                "${floor(it).toInt()}℃"
+            } ?: "12℃"
+            val currentWeather = weather.weather?.get(0)
+            val iconId = currentWeather?.id ?: 800
+            val weatherDesc = currentWeather?.description ?: appContext.getString(R.string.clear_weather_txt)
+            val geocoder = Geocoder(appContext.applicationContext, Locale.getDefault())
+            val locationName = try {
+                val listAddresses = geocoder.getFromLocation(gpsTracker.latitude, gpsTracker.longitude, 1)
+                if (listAddresses != null && listAddresses.size > 0) {
+                    listAddresses[0].adminArea
+                } else {
+                    weatherPlace
+                }
+            } catch (e: IOException) {
+                weatherPlace
+            }
+
+            val windSpeed = "${floor(weather.wind?.speed?:1.0).toInt()} ${appContext.getString(R.string.wind_speed_txt)}"
+            val windDirection = degToCompass(weather.wind?.deg?:0.0)
+
+            val humidity = "${floor(weather.main?.humidity ?: 0.0).toInt()}%"
+            val pressure = "${floor(weather.main?.pressure ?: 762.0).toInt()}"
+
+            val cal = Calendar.getInstance()
+            val currentHour = cal[Calendar.HOUR_OF_DAY]
+
+            val sunsetTime = (weather.sys?.sunset?:0)*1000L
+            val sunriseTime = (weather.sys?.sunrise?:0)*1000L
+
+            cal.timeInMillis = sunsetTime
+            val sunsetHour = cal[Calendar.HOUR_OF_DAY]
+            cal.timeInMillis = sunriseTime
+            val sunriseHour = cal[Calendar.HOUR_OF_DAY]
+
+            val isDay = (currentHour < sunriseHour || currentHour > sunsetHour)
+            val daySunDesc = if(isDay) appContext.getString(R.string.sunrise_txt) else appContext.getString(R.string.sunset_txt)
+            val daySunValue = if(isDay) sunriseTime else sunsetTime
+            val daySunStr = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date(daySunValue))
+
+            mainItemModel = mainItemModel?:MainItemModel()
+            mainItemModel.let {
+                it.imgCode = iconId
+                it.locationName = locationName
+                it.weatherDesc = weatherDesc
+                it.temperature = temperature
+                it.windSpeed = windSpeed
+                it.windDirection = windDirection
+                it.humidity = humidity
+                it.pressure = pressure
+                it.daySun = daySunStr
+                it.daySunDesc = daySunDesc
+                it.minTemp = weather.main?.temp_min.toString()
+                it.maxTemp = weather.main?.temp_max.toString()
+            }
+            mainItemModel.save()
+
+            val itemsList = mutableListOf<AbstractItem<*,*>>(MainItem(mainItemModel))
+            forecast.list?.forEach {
+                itemsList.add(TemperatiureItem())
+            }
+
+            output?.onAllMainDataHandler(itemsList)
         }
 
         override fun getLocationWeatherDataList(lon: Double, lat: Double) {

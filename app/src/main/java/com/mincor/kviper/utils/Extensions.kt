@@ -17,7 +17,8 @@ import android.view.ViewManager
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import com.mincor.kviper.BuildConfig
+import com.airbnb.android.airmapview.AirMapView
+import com.mincor.weatherme.BuildConfig
 import com.raizlabs.android.dbflow.kotlinextensions.database
 import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction
 import kotlinx.coroutines.experimental.*
@@ -108,6 +109,10 @@ inline fun ViewManager.gestureFabButton(styleRes: Int = 0, init: FabGestureButto
     }
 }*/
 
+inline fun ViewManager.mapView(init:AirMapView.()->Unit):AirMapView {
+    return ankoView({AirMapView(it)}, theme = 0, init = init)
+}
+
 /**
  * DATABASE EXECUTION
  */
@@ -142,7 +147,7 @@ fun View.color(@ColorRes resource: Int): Int = ContextCompat.getColor(context, r
 fun View.string(stringRes:Int):String = context.getString(stringRes)
 //fun Context.wdthProc(proc:Float):Int = (this.displayMetrics.widthPixels*proc).toInt()
 fun View.wdthProc(proc:Float):Int = (context.displayMetrics.widthPixels*proc).toInt()
-fun Context.hdthProc(proc:Float):Int = (this.displayMetrics.heightPixels*proc).toInt()
+//fun Context.hdthProc(proc:Float):Int = (this.displayMetrics.heightPixels*proc).toInt()
 fun View.hdthProc(proc:Float):Int = (context.displayMetrics.heightPixels*proc).toInt()
 
 inline fun log(lambda: () -> String?) {

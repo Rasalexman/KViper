@@ -8,7 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.ControllerChangeType
-import com.mincor.kviper.R
+import com.mincor.weatherme.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.toolbar
 import org.jetbrains.anko.design.appBarLayout

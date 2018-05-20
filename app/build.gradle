@@ -6,7 +6,7 @@ apply plugin: 'kotlin-kapt'
 android {
     compileSdkVersion 27
     defaultConfig {
-        applicationId "com.mincor.kviper"
+        applicationId "com.mincor.weatherme"
         minSdkVersion 17
         targetSdkVersion 27
         versionCode 10002
@@ -50,6 +50,10 @@ dependencies {
 
     ///---- EVENT DISPATCHER
     implementation 'com.rasalexman.kdispatcher:kdispatcher:0.1.1'
+
+    // MAP
+    implementation 'com.google.android.gms:play-services-maps:15.0.0'
+    implementation 'com.airbnb.android:airmapview:1.6.0'
 
     // Anko Layouts
     implementation "org.jetbrains.anko:anko-sdk25:$ankoVersion"
