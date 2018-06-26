@@ -1,9 +1,6 @@
 package com.mincor.kviper.di.contracts
 
 import com.mikepenz.fastadapter.items.AbstractItem
-import com.mincor.kviper.models.WeatherDataResponce
-import com.mincor.kviper.models.items.MainItemModel
-import com.mincor.kviper.models.network.ForecastDataResponce
 import com.mincor.kviper.models.network.ListFindDataResponce
 import com.mincor.kviper.viper.core.iteractor.IInteractor
 import com.mincor.kviper.viper.core.iteractor.IInteractorHandler

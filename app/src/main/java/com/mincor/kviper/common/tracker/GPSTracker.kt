@@ -130,11 +130,11 @@ class GPSTracker(private val context: Application, private val locationManager: 
         alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?")
 
         // On pressing Settings button
-        alertDialog.setPositiveButton("Settings", { dialog, _ ->
+        alertDialog.setPositiveButton("Settings") { dialog, _ ->
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             context.startActivity(intent)
             dialog.cancel()
-        })
+        }
 
 
         alertDialog.setCancelable(false)
