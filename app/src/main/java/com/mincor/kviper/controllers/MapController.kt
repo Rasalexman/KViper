@@ -1,8 +1,8 @@
 package com.mincor.kviper.controllers
 
 import android.content.Context
-import android.support.v7.app.AppCompatActivity
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.airbnb.android.airmapview.AirMapMarker
 import com.airbnb.android.airmapview.AirMapView
 import com.airbnb.android.airmapview.listeners.*
@@ -32,7 +32,6 @@ class MapController : BaseController(), OnMapInitializedListener, OnInfoWindowCl
         super.onAttach(view)
         mapView?.initialize((activity as AppCompatActivity).supportFragmentManager)
         mapView?.setOnMapInitializedListener(this)
-
     }
 
     override fun onDetach(view: View) {

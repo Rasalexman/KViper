@@ -1,16 +1,25 @@
 package com.mincor.kviper.viper.baseui
 
+import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bluelinelabs.conductor.Controller
 import com.mikepenz.fastadapter.IAdapter
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
 import com.mikepenz.fastadapter.listeners.OnClickListener
 import com.mikepenz.fastadapter_extensions.items.ProgressItem
 import com.mincor.kviper.utils.EndlessRecyclerViewScrollListener
-import com.mincor.kviper.utils.L
+import com.mincor.kviper.utils.ScrollPosition
+import com.mincor.kviper.utils.log
+import org.jetbrains.anko.AnkoComponent
+import org.jetbrains.anko.AnkoContext
+import org.jetbrains.anko.backgroundColor
+import org.jetbrains.anko.matchParent
+import org.jetbrains.anko.recyclerview.v7.recyclerView
 
 /**
  * Created by Alex on 07.01.2017.
@@ -18,14 +27,20 @@ import com.mincor.kviper.utils.L
 
 abstract class BaseRecyclerController : BaseController, OnClickListener<AbstractItem<*, *>> {
 
-    protected constructor()
-    protected constructor(args: Bundle) : super(args)
+    constructor()
+    constructor(args: Bundle) : super(args)
 
     init {
-        retainViewMode = RetainViewMode.RETAIN_DETACH
+        retainViewMode = Controller.RetainViewMode.RETAIN_DETACH
+    }
+
+    companion object {
+        private const val SCROLL_VISIBLE_THRESHOLD = 15
     }
 
     protected var recycler: RecyclerView? = null
+    // current iterating item
+    protected var currentItem: AbstractItem<*, *>? = null
 
     // layout manager for recycler
     protected open var layoutManager: RecyclerView.LayoutManager? = null
@@ -38,33 +53,62 @@ abstract class BaseRecyclerController : BaseController, OnClickListener<Abstract
     // save our FastAdapter
     protected var mFastItemAdapter: FastItemAdapter<AbstractItem<*, *>>? = null
     // последняя сохраненная позиция (index & offset) прокрутки ленты
-    protected open val previousPosition: ScrollPosition? = null
+    protected open val previousPosition: ScrollPosition? = ScrollPosition()
     // крутилка прогресса)
     private val progressItem = ProgressItem().withEnabled(false)
     // корличесвто элементов до того как пойдет запрос на скролл пагинацию
-    protected open val visibleScrollCount get() = 5
+    protected open val visibleScrollCount get() = SCROLL_VISIBLE_THRESHOLD
 
-    override fun onAttach(view: View) {
-        super.onAttach(view)
+    protected open val recyclerBackgroundColor = Color.LTGRAY
 
+    override fun getViewInstance(context: Context): View =
+            BaseRecyclerUI().createView(AnkoContext.create(context, this))
+
+    override fun onViewCreated(view: View) {
+        super.onViewCreated(view)
         setRVLayoutManager()     // менеджер лайаута
-        setItemDecorator()      // декоратор лайаута
-        createAdapter()         // адаптер
-        setRVCAdapter()         // назначение
-        addEventHook()
+        setItemDecorator()       // декорации
+        createAdapter()          // адаптер
+        setRVCAdapter()          // назначение
+        addEventHook()           // для нажатия внутри айтемов
+    }
+
+    open fun showItems(list: List<AbstractItem<*, *>>) {
+        if (list.isNotEmpty()) {
+            mFastItemAdapter?.apply {
+                clear()
+                setNewList(list)
+            }
+        }
+    }
+
+    open fun addNewItems(list: List<AbstractItem<*, *>>) {
+        if (list.isNotEmpty()) {
+            mFastItemAdapter?.add(0, list)
+            scrollToTop()
+        }
+    }
+
+    open fun addItems(list: List<AbstractItem<*, *>>) {
+        hideLoading()
+        if (list.isNotEmpty()) {
+            mFastItemAdapter?.add(list)
+        }
     }
 
     // менеджер лайаута
-    private fun setRVLayoutManager() {
-        layoutManager ?: let {
-            layoutManager = LinearLayoutManager(this.activity, layoutManagerOrientation, false)
-            recycler?.layoutManager = layoutManager
+    protected open fun setRVLayoutManager() {
+        layoutManager ?: this.activity?.let { context ->
+            layoutManager = LinearLayoutManager(context, layoutManagerOrientation, false)
         }
+        recycler?.layoutManager = layoutManager
     }
 
     // промежутки в адаптере
     protected open fun setItemDecorator() {
-        itemDecoration?.let { recycler?.addItemDecoration(it) }
+        if (recycler?.itemDecorationCount == 0) {
+            itemDecoration?.let { recycler?.addItemDecoration(it) }
+        }
     }
 
     // создаем адаптеры
@@ -75,69 +119,73 @@ abstract class BaseRecyclerController : BaseController, OnClickListener<Abstract
         }
     }
 
-    protected open fun addClickListenerToAdapter(){
-        mFastItemAdapter!!.withOnClickListener(this)
+    protected open fun addClickListenerToAdapter() {
+        mFastItemAdapter?.withOnClickListener(this)
     }
 
     //назначаем адаптеры
-    private fun setRVCAdapter() {
+    protected open fun setRVCAdapter(isFixedSizes: Boolean = false) {
         recycler?.adapter ?: let {
-            recycler?.setHasFixedSize(false)
-            recycler?.swapAdapter(mFastItemAdapter, false)
+            recycler?.setHasFixedSize(isFixedSizes)
+            recycler?.swapAdapter(mFastItemAdapter, true)
         }
     }
 
     //
     protected open fun addEventHook() {}
 
+
     // слушатель бесконечная прокрутка
     protected fun setRVCScroll() {
-         scrollListener ?: let {
-             scrollListener = object : EndlessRecyclerViewScrollListener(layoutManager!!, visibleScrollCount) {
-                 override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-                     loadNextDataFromApi(page)
-                 }
-             }
-             recycler?.addOnScrollListener(scrollListener!!)
-         }
+        scrollListener = scrollListener ?: object : EndlessRecyclerViewScrollListener(layoutManager, visibleScrollCount) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                loadNextPage(page)
+            }
+        }
+        recycler?.addOnScrollListener(scrollListener!!)
     }
 
     // Показываем загрузку
-    fun showLoadingFooter() {
-        hideLoadingFooter()
+    fun showLoading() {
+        hideLoading()
         mFastItemAdapter?.add(progressItem)
     }
 
     // прячем загрузку
-    open fun hideLoadingFooter() {
+    fun hideLoading() {
         val position = mFastItemAdapter?.getAdapterPosition(progressItem) ?: -1
         if (position > -1) mFastItemAdapter?.remove(position)
     }
 
     //--------- CALL BACKS FOR RECYCLER VIEW ACTIONS
-    protected open fun loadNextDataFromApi(page: Int) {}
+    protected open fun loadNextPage(page: Int) {}
 
-    override fun onClick(v: View?, adapter: IAdapter<AbstractItem<*, *>>?, item: AbstractItem<*, *>, position: Int): Boolean {
-        L.d("ITEM CLICKED ON POSITION $position")
-        onItemClickListener(item, position)
+    override fun onClick(
+            v: View?,
+            adapter: IAdapter<AbstractItem<*, *>>?,
+            item: AbstractItem<*, *>,
+            position: Int
+    ): Boolean {
+        log { "ITEM CLICKED ON POSITION $position" }
+        onItemClickHandler(item, position)
         return false
     }
 
-    protected open fun onItemClickListener(item: AbstractItem<*, *>, position: Int) {}
+    protected open fun onItemClickHandler(item: AbstractItem<*, *>, position: Int) {}
 
     override fun onDetach(view: View) {
         savePreviousPosition()
-        hideLoadingFooter()
+        hideLoading()
         super.onDetach(view)
     }
 
     // если хотим сохранить последнюю проскролленную позицию
     protected open fun savePreviousPosition() {
         recycler?.let { rec ->
-            previousPosition?.let {
+            previousPosition?.let { scrollPosition ->
                 val v = rec.getChildAt(0)
-                it.index = (rec.layoutManager as? LinearLayoutManager?)?.findFirstVisibleItemPosition() ?: 0
-                it.top = v?.let { it.top - rec.paddingTop } ?: 0
+                scrollPosition.index = (rec.layoutManager as? LinearLayoutManager?)?.findFirstVisibleItemPosition() ?: 0
+                scrollPosition.top = v?.let { it.top - rec.paddingTop } ?: 0
             }
         }
     }
@@ -161,15 +209,17 @@ abstract class BaseRecyclerController : BaseController, OnClickListener<Abstract
         applyScrollPosition()
     }
 
-    fun stopRecyclerScroll(){
+    private fun stopRecyclerScroll() {
         // останавливаем прокрутку
         recycler?.stopScroll()
     }
 
     fun clearAdapter() {
         scrollListener?.resetState()
-        mFastItemAdapter?.clear()
-        mFastItemAdapter?.notifyAdapterDataSetChanged()
+        mFastItemAdapter?.apply {
+            clear()
+            notifyAdapterDataSetChanged()
+        }
     }
 
     private fun clearFastAdapter() {
@@ -190,15 +240,23 @@ abstract class BaseRecyclerController : BaseController, OnClickListener<Abstract
             layoutManager = null
             itemAnimator = null
             clearOnScrollListeners()
-            recycledViewPool?.clear()
+            recycledViewPool.clear()
 
             itemDecoration?.let {
                 removeItemDecoration(it)
             }
+            itemDecoration = null
         }
     }
 
-    override fun onDestroy() {
+    protected fun removeCurrentItemFromAdapter() {
+        mFastItemAdapter?.getAdapterPosition(currentItem)?.let {
+            mFastItemAdapter?.remove(it)
+            currentItem = null
+        }
+    }
+
+    override fun onDestroyView(view: View) {
         clearFastAdapter()
         clearRecycler()
 
@@ -208,14 +266,17 @@ abstract class BaseRecyclerController : BaseController, OnClickListener<Abstract
         itemDecoration = null
         recycler = null
         scrollListener = null
-        super.onDestroy()
+        currentItem = null
+        super.onDestroyView(view)
     }
 
-    //----------- SCROLL POSITION CLASS
-    data class ScrollPosition(var index:Int = 0, var top:Int = 0){
-        fun drop(){
-            index = 0
-            top = 0
+    private class BaseRecyclerUI : AnkoComponent<BaseRecyclerController> {
+        override fun createView(ui: AnkoContext<BaseRecyclerController>): View = with(ui) {
+            ui.owner.recycler = recyclerView {
+                lparams(matchParent, matchParent)
+                backgroundColor = ui.owner.recyclerBackgroundColor
+            }
+            ui.owner.recycler!!
         }
     }
 }

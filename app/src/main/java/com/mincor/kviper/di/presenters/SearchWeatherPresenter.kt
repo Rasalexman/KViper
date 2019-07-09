@@ -1,25 +1,25 @@
 package com.mincor.kviper.di.presenters
 
-import com.mincor.kviper.adapters.MainItem
 import com.mincor.kviper.di.contracts.ISearchWeatherContract
 import com.mincor.kviper.di.interfaces.IWeatherApi
 import com.mincor.kviper.models.WeatherDataResponce
 import com.mincor.kviper.utils.log
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.singleton
 import ru.gildor.coroutines.retrofit.await
 
-class SearchWeatherPresenter(weatherApi: IWeatherApi) : ISearchWeatherContract.IPresenter, ISearchWeatherContract.ISearchInteractorHandler {
+class SearchWeatherPresenter(
+        weatherApi: IWeatherApi
+) : ISearchWeatherContract.IPresenter, ISearchWeatherContract.ISearchInteractorHandler {
 
     private var router: ISearchWeatherContract.ISearchRouter? = null
     private val interactor: ISearchWeatherContract.ISearchInteractor = SearchWeatherInteractor(this, weatherApi)
 
-    private var weatherDataResponce:WeatherDataResponce? = null
+    private var weatherDataResponse:WeatherDataResponce? = null
 
     ///------ SEARCH WEATHER BY WORD FROM VIEW
     override fun onSearchSubmit(word: String) {
@@ -30,14 +30,14 @@ class SearchWeatherPresenter(weatherApi: IWeatherApi) : ISearchWeatherContract.I
 
     ///------ SEARCH BY WORD
     override fun onSearchedWeatherHandler(weatherData: WeatherDataResponce) {
-        weatherDataResponce = weatherData
+        weatherDataResponse = weatherData
         router?.onSearchResult(weatherData)
     }
 
     override fun onResultHandler(result: Any?) {
         val weatherData = result as? WeatherDataResponce
         weatherData?.let {
-            weatherDataResponce = result
+            weatherDataResponse = result
             router?.onSearchResult(result)
         }
 
@@ -56,7 +56,7 @@ class SearchWeatherPresenter(weatherApi: IWeatherApi) : ISearchWeatherContract.I
         router = null
     }
 
-    inner class SearchWeatherInteractor(
+    class SearchWeatherInteractor(
             override val output: ISearchWeatherContract.ISearchInteractorHandler? = null,
             private val weatherApi: IWeatherApi
     ) : ISearchWeatherContract.ISearchInteractor {
@@ -70,7 +70,7 @@ class SearchWeatherPresenter(weatherApi: IWeatherApi) : ISearchWeatherContract.I
             if(word == lastWord) return
             lastWord = word
 
-            launch(CommonPool) {
+            GlobalScope.launch {
                 val result =
                         try {
                             getWeatherData(word)
@@ -94,7 +94,7 @@ class SearchWeatherPresenter(weatherApi: IWeatherApi) : ISearchWeatherContract.I
         }
     }
 
-    inner class SearchWeatherRouter(override var view: ISearchWeatherContract.IView? = null) : ISearchWeatherContract.ISearchRouter {
+    class SearchWeatherRouter(override var view: ISearchWeatherContract.IView? = null) : ISearchWeatherContract.ISearchRouter {
 
         override fun showSubmitError() {
 
@@ -113,6 +113,6 @@ class SearchWeatherPresenter(weatherApi: IWeatherApi) : ISearchWeatherContract.I
     }
 }
 
-val searchModule = Kodein.Module {
+val searchModule = Kodein.Module("searchModule") {
     bind<ISearchWeatherContract.IPresenter>() with singleton { SearchWeatherPresenter(instance()) }
 }

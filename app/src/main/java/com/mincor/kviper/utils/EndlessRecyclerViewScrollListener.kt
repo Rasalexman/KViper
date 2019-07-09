@@ -1,16 +1,18 @@
 package com.mincor.kviper.utils
 
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.StaggeredGridLayoutManager
-
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 
 
 /**
  * Created by a.minkin on 13.03.2018.
  */
-abstract class EndlessRecyclerViewScrollListener(private val mLayoutManager: RecyclerView.LayoutManager, private var visibleThreshold:Int = 5) : RecyclerView.OnScrollListener() {
+abstract class EndlessRecyclerViewScrollListener(
+        private val mLayoutManager: RecyclerView.LayoutManager?,
+        private var visibleThreshold: Int = 5
+) : RecyclerView.OnScrollListener() {
     // The minimum amount of items to have below your current scroll position
     // before loading more.
 
@@ -47,11 +49,13 @@ abstract class EndlessRecyclerViewScrollListener(private val mLayoutManager: Rec
     // This happens many times a second during a scroll, so be wary of the code you place here.
     // We are given a few useful parameters to help us work out if we need to load some more data,
     // but first we check if we are waiting for the previous load to finish.
-    override fun onScrolled(view: RecyclerView?, dx: Int, dy: Int) {
+    override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
         var lastVisibleItemPosition = 0
+        if(mLayoutManager == null) return
+
         val totalItemCount = mLayoutManager.itemCount
 
-        if(totalItemCount < visibleThreshold) return
+        if (totalItemCount < visibleThreshold) return
 
         when (mLayoutManager) {
             is StaggeredGridLayoutManager -> {
@@ -97,7 +101,7 @@ abstract class EndlessRecyclerViewScrollListener(private val mLayoutManager: Rec
         // threshold should reflect how many total columns there are too
         if (!loading && lastVisibleItemPosition + visibleThreshold > totalItemCount) {
             currentPage++
-            onLoadMore(currentPage, totalItemCount, view)
+            onLoadMore(currentPage, totalItemCount)
             loading = true
         }
     }
@@ -110,6 +114,6 @@ abstract class EndlessRecyclerViewScrollListener(private val mLayoutManager: Rec
     }
 
     // Defines the process for actually loading more data based on page
-    abstract fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?)
+    abstract fun onLoadMore(page: Int, totalItemsCount: Int)
 
 }

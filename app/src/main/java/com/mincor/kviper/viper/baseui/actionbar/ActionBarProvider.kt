@@ -1,7 +1,7 @@
 package com.mincor.kviper.viper.baseui.actionbar
 
-import android.support.v7.app.ActionBar
-import android.support.v7.widget.Toolbar
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.widget.Toolbar
 
 
 interface ActionBarProvider {

@@ -1,15 +1,10 @@
 package com.mincor.kviper.utils
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
-import android.support.annotation.ColorRes
-import android.support.annotation.DrawableRes
-import android.support.v4.content.ContextCompat
-import android.support.v7.view.ContextThemeWrapper
 import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
@@ -17,11 +12,16 @@ import android.view.ViewManager
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
+import androidx.appcompat.view.ContextThemeWrapper
+import androidx.core.content.ContextCompat
 import com.airbnb.android.airmapview.AirMapView
 import com.mincor.weatherme.BuildConfig
 import com.raizlabs.android.dbflow.kotlinextensions.database
 import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction
-import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.withTimeoutOrNull
 import org.jetbrains.anko.custom.ankoView
 import org.jetbrains.anko.displayMetrics
 
@@ -44,12 +44,6 @@ inline fun ViewManager.styledButton(textres: Int, styleRes: Int = 0, init: Butto
     return ankoView({ if (styleRes == 0) Button(it) else Button(ContextThemeWrapper(it, styleRes), null, 0) }, 0) {
         init()
         setText(textres)
-    }
-}
-
-inline fun schedule(crossinline runner: suspend () -> Unit)  {
-    launch(CommonPool) {
-        runner()
     }
 }
 
@@ -111,6 +105,13 @@ inline fun ViewManager.gestureFabButton(styleRes: Int = 0, init: FabGestureButto
 
 inline fun ViewManager.mapView(init:AirMapView.()->Unit):AirMapView {
     return ankoView({AirMapView(it)}, theme = 0, init = init)
+}
+
+data class ScrollPosition(var index: Int = 0, var top: Int = 0) {
+    fun drop() {
+        index = 0
+        top = 0
+    }
 }
 
 /**
@@ -251,7 +252,6 @@ fun ImageView.clear(){
     this.setImageResource(0)
     this.setImageBitmap(null)
     this.setImageDrawable(null)
-    this.destroyDrawingCache()
 }
 
 fun ViewGroup.clear(){

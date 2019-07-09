@@ -8,8 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
-import com.mincor.weatherme.R
 import com.mincor.kviper.utils.roundedBg
+import com.mincor.weatherme.R
 import org.jetbrains.anko.*
 import ru.fortgroup.dpru.adapters.IDataHolder
 
@@ -17,40 +17,17 @@ import ru.fortgroup.dpru.adapters.IDataHolder
  * Created by Alex on 07.01.2017.
  */
 
-class TemperatiureItem : AbstractItem<TemperatiureItem, TemperatiureItem.ViewHolder>(), IDataHolder {
+class TemperatureItem : AbstractItem<TemperatureItem, TemperatureItem.ViewHolder>(), IDataHolder {
 
-    override fun createView(ctx: Context, parent: ViewGroup?): View = TemperatureUI().createView(AnkoContext.create(ctx, this))
+    override fun createView(ctx: Context, parent: ViewGroup?): View = createView(AnkoContext.create(ctx, this))
     override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
     override fun getType(): Int = R.id.next_item_id
     override fun getLayoutRes(): Int = -1
 
     /**
-     * Событие когда кликнули на тэг
-     */
-    /*class TagMainClickEvent : ClickEventHook<MainItem>() {
-        override fun onBind(viewHolder: RecyclerView.ViewHolder): View? = (viewHolder as? ViewHolder?)?.mainTag
-        override fun onClick(v: View?, position: Int, fastAdapter: FastAdapter<MainItem>?, item: MainItem) {
-            KDispatcher.call(TAG_IN_ITEM_CLICK_EVENT, item)
-            // analytics
-            Analytics.sendAnalytics(Analytics.TAG_CLICKED, bundleOf(Pair(Consts.NAME, item.tagName
-                    ?: ""), Pair(Consts.SCREEN, MenuScreens.SCREEN_MAIN.tag)))
-        }
-    }*/
-
-    /**
-     * Событие когда кликнули на тэг
-     */
-    /*class AuthorMainClickEvent : ClickEventHook<MainItem>() {
-        override fun onBind(viewHolder: RecyclerView.ViewHolder): View? = (viewHolder as? ViewHolder?)?.mainAuthor
-        override fun onClick(v: View?, position: Int, fastAdapter: FastAdapter<MainItem>?, item: MainItem) {
-            KDispatcher.call(AUTHOR_IN_ITEM_CLICK_EVENT, item.author)
-        }
-    }*/
-
-    /**
      * our ViewHolder
      */
-    class ViewHolder(view: View) : FastAdapter.ViewHolder<TemperatiureItem>(view) {
+    class ViewHolder(view: View) : FastAdapter.ViewHolder<TemperatureItem>(view) {
         /*val mainAuthor: TextView = view.find(R.id.text_main_author)
         val mainTag: TextView = view.find(R.id.text_main_rubric)
 
@@ -58,7 +35,7 @@ class TemperatiureItem : AbstractItem<TemperatiureItem, TemperatiureItem.ViewHol
         private val imageProgress: ProgressBar = view.find(R.id.image_loader)
         private val mainTitle: TextView = view.find(R.id.text_main_title)*/
 
-        override fun bindView(item: TemperatiureItem, payloads: MutableList<Any>?) {
+        override fun bindView(item: TemperatureItem, payloads: MutableList<Any>?) {
             /*mainAuthor.text = item.author
             mainTitle.text = item.title.fromHTML(mainTitle.context)
 
@@ -74,7 +51,7 @@ class TemperatiureItem : AbstractItem<TemperatiureItem, TemperatiureItem.ViewHol
             }*/
         }
 
-        override fun unbindView(item: TemperatiureItem?) {
+        override fun unbindView(item: TemperatureItem?) {
            /* mainImage.clear()
             mainAuthor.text = null
             mainTitle.text = null
@@ -82,8 +59,8 @@ class TemperatiureItem : AbstractItem<TemperatiureItem, TemperatiureItem.ViewHol
         }
     }
 
-    inner class TemperatureUI : AnkoComponent<TemperatiureItem> {
-        override fun createView(ui: AnkoContext<TemperatiureItem>): View = with(ui) {
+    companion object : AnkoComponent<TemperatureItem> {
+        override fun createView(ui: AnkoContext<TemperatureItem>): View = with(ui) {
             frameLayout {
                 //backgroundColor = Color.parseColor("#7987C8")//color(R.color.colorRed)
                 id = R.id.main_item_lay

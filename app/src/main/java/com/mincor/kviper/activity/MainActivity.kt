@@ -6,12 +6,12 @@ import android.content.pm.PackageManager
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
@@ -24,16 +24,14 @@ import org.jetbrains.anko.matchParent
 class MainActivity : AppCompatActivity(), ActionBarProvider {
 
     // главный роутер приложения
-    var mainRouter: Router? = null
+    private var mainRouter: Router? = null
 
     @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mainRouter = mainRouter ?: let {
-            // главный контейнер приложения
-            val container = frameLayout { lparams(matchParent, matchParent) }
-            Conductor.attachRouter(this, container, savedInstanceState)
-        }
+        val container = frameLayout { lparams(matchParent, matchParent) }
+
+        mainRouter = Conductor.attachRouter(this, container, savedInstanceState)
         showMainScreenAndCheckPermissions()
     }
 

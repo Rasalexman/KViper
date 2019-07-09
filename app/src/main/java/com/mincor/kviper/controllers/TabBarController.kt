@@ -3,7 +3,7 @@ package com.mincor.kviper.controllers
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
-import android.support.design.widget.TabLayout
+import com.google.android.material.tabs.TabLayout
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView

@@ -15,7 +15,7 @@ interface IMainPageContract {
     }
 
     interface IView : IBaseView<IPresenter> {
-        fun showLoadingFooter()
+        fun showLoading()
         fun onSuccess(list: List<AbstractItem<*, *>>)
         fun onError(error:String)
     }

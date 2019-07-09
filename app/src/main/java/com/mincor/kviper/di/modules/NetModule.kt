@@ -1,8 +1,10 @@
 package com.mincor.kviper.di.modules
 
+import android.content.Context
 import com.google.gson.GsonBuilder
 import com.ihsanbal.logging.Level
 import com.ihsanbal.logging.LoggingInterceptor
+import com.mincor.kviper.application.MainApplication
 import com.mincor.weatherme.BuildConfig
 import com.mincor.kviper.common.tracker.GPSTracker
 import com.mincor.kviper.consts.Consts
@@ -13,6 +15,7 @@ import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.internal.platform.Platform
 import org.kodein.di.Kodein
+import org.kodein.di.direct
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.singleton
@@ -21,16 +24,17 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 
-val netModule = Kodein.Module {
+val netModule = Kodein.Module("netModule") {
     constant(Consts.SERVER_URL) with "http://api.openweathermap.org/data/2.5/"
-    bind<OkHttpClient>() with singleton { createOkHttpClient(instance("cache")) }
+    bind<OkHttpClient>() with singleton { createOkHttpClient(instance()) }
     bind<IWeatherApi>() with singleton { createWebServiceApi<IWeatherApi>(instance(), instance(Consts.SERVER_URL)) }
-    bind<GPSTracker>() with singleton { GPSTracker(instance(), instance()) }
+    bind<GPSTracker>() with singleton { GPSTracker(instance()) }
 }
 
-fun createOkHttpClient(cachedDir: File): OkHttpClient {
+fun createOkHttpClient(context: Context): OkHttpClient {
     val httpClient = OkHttpClient.Builder()
 
+    val cachedDir: File = context.cacheDir
     try {
         httpClient.cache(Cache(cachedDir, 10L * 1024L * 1024L)) // 10 MB Cache
     } catch (e: Exception) {

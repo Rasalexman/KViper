@@ -20,8 +20,12 @@ abstract class ViewBindController : Controller, KodeinAware {
     protected constructor(args: Bundle) : super(args)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
-        return getViewInstance(inflater.context)
+        val view = getViewInstance(inflater.context)
+        onViewCreated(view)
+        return view
     }
+
+    open fun onViewCreated(view: View) {}
 
     abstract fun getViewInstance(context: Context):View
 

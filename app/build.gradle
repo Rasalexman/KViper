@@ -4,14 +4,14 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     defaultConfig {
         applicationId "com.mincor.weatherme"
-        minSdkVersion 17
-        targetSdkVersion 27
+        minSdkVersion 19
+        targetSdkVersion 28
         versionCode 10002
         versionName "1.0.2"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -21,22 +21,16 @@ android {
     }
 }
 
-kotlin { experimental { coroutines 'enable' } }
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation "com.android.support:appcompat-v7:${supportLib}"
-    implementation "com.android.support:design:${supportLib}"
-    implementation "com.android.support:recyclerview-v7:${supportLib}"
+    implementation "androidx.appcompat:appcompat:$appCompatXVersion"
+    implementation "androidx.core:core-ktx:$appCoreXVersion"
 
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-
-        //------ KODEIN 5
-    implementation "org.kodein.di:kodein-di-generic-jvm:$kodeinVersion5"
-    implementation "org.kodein.di:kodein-di-framework-android:$kodeinVersion5"
+    //--- DI
+    implementation "org.kodein.di:kodein-di-generic-jvm:$kodeinVersion6"
+    implementation "org.kodein.di:kodein-di-framework-android-core:$kodeinVersion6"
+    implementation "org.kodein.di:kodein-di-framework-android-x:$kodeinVersion6"
 
     //----- CONDUCTOR
     implementation "com.bluelinelabs:conductor:$conductorVersion"
@@ -49,20 +43,20 @@ dependencies {
     implementation "com.mikepenz:fastadapter-extensions:$fastAdapterExtension@aar"
 
     ///---- EVENT DISPATCHER
-    implementation 'com.rasalexman.kdispatcher:kdispatcher:0.1.1'
+    implementation 'com.rasalexman.kdispatcher:kdispatcher:1.0.0'
 
     // MAP
-    implementation 'com.google.android.gms:play-services-maps:15.0.0'
-    implementation 'com.airbnb.android:airmapview:1.6.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.airbnb.android:airmapview:1.8.0'
 
     // Anko Layouts
-    implementation "org.jetbrains.anko:anko-sdk25:$ankoVersion"
+    implementation "org.jetbrains.anko:anko-sdk27:$ankoVersion"
 
     // sdk15, sdk19, sdk21, sdk23 are also available
     implementation "org.jetbrains.anko:anko-appcompat-v7:$ankoVersion"
 
     // Coroutine listeners for Anko Layouts
-    implementation "org.jetbrains.anko:anko-sdk25-coroutines:$ankoVersion"
+    implementation "org.jetbrains.anko:anko-sdk27-coroutines:$ankoVersion"
     implementation "org.jetbrains.anko:anko-appcompat-v7-coroutines:$ankoVersion"
 
     // Design
@@ -73,7 +67,7 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     implementation "ru.gildor.coroutines:kotlin-coroutines-retrofit:$retrofitCoroutinesVersion"
-    implementation('com.github.ihsanbal:LoggingInterceptor:2.0.4') {
+    implementation("com.github.ihsanbal:LoggingInterceptor:$retrofitLogginVersion") {
         exclude group: 'org.json', module: 'json'
     }
 
@@ -83,4 +77,8 @@ dependencies {
     implementation "com.github.Raizlabs.DBFlow:dbflow-kotlinextensions:$dbflowVersion"
 
     kapt "com.github.Raizlabs.DBFlow:dbflow-processor:$dbflowVersion"
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }

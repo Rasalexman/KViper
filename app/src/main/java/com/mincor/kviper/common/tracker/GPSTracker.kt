@@ -1,8 +1,6 @@
 package com.mincor.kviper.common.tracker
 
 import android.app.AlertDialog
-import android.app.Application
-import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -11,12 +9,23 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
-import android.os.IBinder
 import android.provider.Settings
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
+import com.mincor.kviper.application.MainApplication
 import com.mincor.kviper.utils.log
+import org.kodein.di.KodeinAware
+import org.kodein.di.generic.instance
+import org.kodein.di.generic.kcontext
 
-class GPSTracker(private val context: Application, private val locationManager: LocationManager) : Service(), LocationListener {
+class GPSTracker(
+        private val context: Context
+) : LocationListener, KodeinAware {
+
+    override val kodein by (context as MainApplication).kodein
+
+    override val kodeinContext = kcontext(context)
+
+    private val locationManager: LocationManager by instance()
 
     // flag for GPS status
     private var isGPSEnabled = false
@@ -148,10 +157,6 @@ class GPSTracker(private val context: Application, private val locationManager: 
     override fun onProviderEnabled(provider: String) {}
 
     override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
-
-    override fun onBind(arg0: Intent): IBinder? {
-        return null
-    }
 
     companion object {
         // The minimum distance to change Updates in meters

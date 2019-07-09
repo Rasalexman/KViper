@@ -1,13 +1,13 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.2.41'
+    ext.kotlin_version = '1.3.41'
     repositories {
         google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.3'
+        classpath 'com.android.tools.build:gradle:3.4.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -15,19 +15,23 @@ buildscript {
     }
 
     ext {
-        supportLib = '27.1.1'
-        conductorVersion = '2.1.4'
-        kodeinVersion5 = "5.0.0"
-        retrofitVersion = "2.3.0"
-        retrofitCoroutinesVersion = "0.10.0"
+        appCompatXVersion = '1.0.2'
+        appCoreXVersion = '1.0.2'
+
+        conductorVersion = '3.0.0-rc1'
+        kodeinVersion6 = "6.3.2"
+        retrofitVersion = "2.6.0"
+        retrofitCoroutinesVersion = "1.1.0"
+        retrofitLogginVersion = '3.0.0'
         dbflowVersion = "4.2.4"
         leakCanaryVersion = "1.5.4"
-        fastAdapterLib = '3.2.5'
-        fastAdapterCommon = '3.2.5'
-        fastAdapterExtension = '3.2.5'
-        glideVersion = '4.7.1'
+        fastAdapterLib = '3.3.1'
+        fastAdapterCommon = '3.3.1'
+        fastAdapterExtension = '3.3.1'
+        glideVersion = '4.9.0'
         firebaseVersion = '12.0.1'
-        ankoVersion='0.10.5'
+        kotlinCoroutinesVersion = "1.2.1"
+        ankoVersion='0.10.8'
     }
 }
 
